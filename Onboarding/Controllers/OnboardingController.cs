@@ -24,35 +24,65 @@ namespace Onboarding.Controllers
         [HttpPost("create/workspace/email")]
         public async Task<IActionResult> OnboardUser([FromBody]LoginViewModel user)
         {
-          await _controller.OnboardUser(user);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _controller.OnboardUser(user);
             return Ok();
         }
 
         [HttpPost("create/workspace/verify")]
         public async Task<IActionResult> Verify([FromBody]string otp)
         {
-           await  _controller.VerifyUser(otp);
-            return Ok();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _controller.VerifyUser(otp);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return Unauthorized();
         }
 
 
         [HttpPost("invite")]
         public async Task<IActionResult> OnboardUserFromWorkspace([FromBody]LoginViewModel user)
         {
-           await  _controller.OnboardUserFromWorkspace(user);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _controller.OnboardUserFromWorkspace(user);
             return Ok();
         }
 
         [HttpPost("create/workspace")]
         public async Task<IActionResult> CreateWorkspace([FromBody]Workspace workspace)
         {
-           await _controller.CreateWorkspace(workspace);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await _controller.CreateWorkspace(workspace);
             return Ok();
         }
 
         [HttpPost("personaldetails")]
         public async Task<IActionResult> PersonalDetails([FromBody] UserAccount user)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             await _controller.PersonalDetails(user);
             return Ok();  
         }
@@ -60,13 +90,28 @@ namespace Onboarding.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody]LoginViewModel login)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var result = await _controller.Login(login);
-            return Ok(result);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return Unauthorized();
+            //return Ok(result);
         }
 
         [HttpPut("workspacedetails")]
         public async Task<IActionResult> WorkspaceDetails([FromBody] Workspace space)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             await _controller.WorkSpaceDetails(space);
             return Ok();
         }
@@ -74,6 +119,11 @@ namespace Onboarding.Controllers
         [HttpGet("{value}")]
         public async Task<IActionResult> GetAllWorkspace([FromRoute]string value)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var list = await _controller.GetAllWorkspace(value);
             return Ok(list);
         }
