@@ -28,6 +28,8 @@ namespace Onboarding.Contract
 
         Task CreateWorkspace(Workspace workspace);
 
-        //Task<IEnumerable> GetAllWorkspace(string emailId);
+        Task<Object> Login(LoginViewModel login);
+
+        Task<IEnumerable> GetAllWorkspace(string emailId);
     }
 }

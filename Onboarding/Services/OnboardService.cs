@@ -134,11 +134,19 @@ namespace Onboarding.Services
 
         public async Task OnboardUserFromWorkspace(LoginViewModel value)
         {
-            var otp = SendMail(value);
+            //var user = await _context.Workspace.Include(x => x.UsersState).FirstOrDefaultAsync(v => v.UsersState.Exists(o => o.EmailId == value.EmailId));
+            var workspace = await _context.Workspace.FirstOrDefaultAsync(x => x.WorkspaceName == value.Workspace);
+            var user = workspace.UsersState.FirstOrDefault(x => x.EmailId == value.EmailId);
 
-            UserState user = new UserState() { EmailId = value.EmailId, Otp = otp };
-            _context.UserState.Add(user);
-            _context.SaveChanges();
+            if (user == null)
+            {
+                var otp = SendMail(value);
+                
+                UserState newUser = new UserState() { EmailId = value.EmailId, Otp = otp };
+                workspace.UsersState.Add(newUser);
+                _context.Workspace.Update(workspace);
+                _context.SaveChanges();
+            }
         }
 
         public async Task CreateWorkspace(Workspace workspace)
@@ -157,12 +165,14 @@ namespace Onboarding.Services
 
         }
 
-        //public async Task<IEnumerable> GetAllWorkspace(string value)
-        //{
-            //var list = _context.UserAccount.Include(x => x.Workspaces).Select(x => x.Workspaces.SelectMany(y => y.Name));
+        public async Task<IEnumerable> GetAllWorkspace(string value)
+        {
+            // var list = _context.UserAccount.Include(x => x.Workspaces).Where(c => c.Workspaces.Any(u => u.Name == u.Name));
+            var user = await _context.UserAccount.Include(t => t.Workspaces).FirstOrDefaultAsync(x => x.EmailId == value);
+            var list = user.Workspaces.Select(v => v.Name);
 
-            //return list;
-       // }
+            return list;
+        }
 
         public async Task PersonalDetails(UserAccount user)
         {
@@ -176,6 +186,40 @@ namespace Onboarding.Services
             //workspace.Id = space.Id;
             _context.Workspace.Update(workspace);
             _context.SaveChanges();
+        }
+
+        public async Task<object> Login(LoginViewModel login)
+        {
+            var user = await _context.UserAccount.Where(existUser =>
+           existUser.EmailId == login.EmailId
+           && existUser.Password == login.Password)
+           .FirstOrDefaultAsync();
+
+            if (user != null)
+            {
+                var claims = new[]
+                {
+                   new Claim(JwtRegisteredClaimNames.Email,user.EmailId
+                   ),
+               };
+
+                var signinKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySuperSecureKey"));
+                var token = new JwtSecurityToken(
+                    issuer: "http://oec.com",
+                    audience: "http://oec.com",
+                    expires: DateTime.UtcNow.AddHours(1),
+                    claims: claims,
+                    signingCredentials: new Microsoft.IdentityModel.Tokens.SigningCredentials(signinKey, SecurityAlgorithms.HmacSha256));
+
+
+                return (new
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(token),
+                    expiration = token.ValidTo
+                });
+            }
+
+            return null;
         }
 
     }

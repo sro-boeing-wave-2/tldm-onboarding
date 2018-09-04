@@ -36,10 +36,10 @@ namespace Onboarding.Controllers
         }
 
 
-        [HttpPost("workspace")]
-        public IActionResult OnboardUserFromWorkspace([FromBody]LoginViewModel user)
+        [HttpPost("invite")]
+        public async Task<IActionResult> OnboardUserFromWorkspace([FromBody]LoginViewModel user)
         {
-            _controller.OnboardUserFromWorkspace(user);
+           await  _controller.OnboardUserFromWorkspace(user);
             return Ok();
         }
 
@@ -57,6 +57,13 @@ namespace Onboarding.Controllers
             return Ok();  
         }
 
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody]LoginViewModel login)
+        {
+            var result = await _controller.Login(login);
+            return Ok(result);
+        }
+
         [HttpPut("workspacedetails")]
         public async Task<IActionResult> WorkspaceDetails([FromBody] Workspace space)
         {
@@ -64,12 +71,12 @@ namespace Onboarding.Controllers
             return Ok();
         }
 
-        //[HttpGet]
-        //public IActionResult GetAllWorkspace([FromRoute]string value)
-        //{
-        //    var list = _controller.GetAllWorkspace(value);
-        //    return Ok(list);
-        //}
+        [HttpGet("{value}")]
+        public async Task<IActionResult> GetAllWorkspace([FromRoute]string value)
+        {
+            var list = await _controller.GetAllWorkspace(value);
+            return Ok(list);
+        }
 
     }
 }
