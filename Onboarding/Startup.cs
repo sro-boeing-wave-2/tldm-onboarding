@@ -13,16 +13,32 @@ namespace Onboarding
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        //public Startup(IConfiguration configuration)
+        //{
+        //    Configuration = configuration;
+        //}
+
+        //public IConfiguration Configuration { get; }
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+
+        // Added for docker support
+
+        public Startup(IConfiguration configuration,IHostingEnvironment environment)
         {
             Configuration = configuration;
+            Environment = environment;
         }
 
         public IConfiguration Configuration { get; }
+        public IHostingEnvironment Environment { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //for docker 
+
+            var connection = @"Server=db;Database=OnboardingContext;User=sa;Password=YourStrongP@ssword;";
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
@@ -34,6 +50,21 @@ namespace Onboarding
                 );
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            //for docker 
+
+            if (Environment.IsEnvironment("Testing"))
+            {
+                //services.AddDbContext<VerificationContext>(options =>
+                //        options.UseSqlServer(Configuration.GetConnectionString("VerificationContext")));
+                services.AddDbContext<OnboardingContext>(options =>
+                    options.UseInMemoryDatabase("TestingDB"));
+            }
+            else
+            {
+                services.AddDbContext<OnboardingContext>(options =>
+                   options.UseSqlServer(connection));
+            }
 
             services.AddDbContext<OnboardingContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("OnboardingContext")));
@@ -59,6 +90,11 @@ namespace Onboarding
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
+
+            //for docker 
+
+            var context = app.ApplicationServices.GetService<OnboardingContext>();
+            context.Database.Migrate();
             app.UseCors("AllowSpecificOrigin");
             app.UseHttpsRedirection();
             app.UseMvc();

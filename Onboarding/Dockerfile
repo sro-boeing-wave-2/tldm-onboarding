@@ -4,11 +4,11 @@ EXPOSE 51453
 EXPOSE 44360
 
 FROM microsoft/dotnet:2.1-sdk AS build
-WORKDIR /src
-COPY Onboarding/Onboarding.csproj Onboarding/
-RUN dotnet restore Onboarding/Onboarding.csproj
+WORKDIR /Onboarding
+COPY *.csproj ./
+RUN dotnet restore 
 COPY . .
-WORKDIR /src/Onboarding
+WORKDIR /Onboarding
 RUN dotnet build Onboarding.csproj -c Release -o /app
 
 FROM build AS publish
