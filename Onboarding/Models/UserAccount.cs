@@ -21,6 +21,6 @@ namespace Onboarding.Models
 
         public bool IsVerified { get; set; }
 
-        public List<Workspace> Workspaces { get; set; }
+        public List<WorkspaceName> Workspaces { get; set; }
     }
 }

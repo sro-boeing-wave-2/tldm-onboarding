@@ -22,10 +22,12 @@ namespace Onboarding.Contract
 
         //Task Login(LoginViewModel model);
 
-        //Task PersonalDetails(UserAccount user);
+        Task PersonalDetails(UserAccount user);
 
-        Task CreateWorkspace(UserAccount workspace);
+        Task WorkSpaceDetails(Workspace workspace);
 
-        Task<IEnumerable> GetAllWorkspace(string emailId);
+        Task CreateWorkspace(Workspace workspace);
+
+        //Task<IEnumerable> GetAllWorkspace(string emailId);
     }
 }

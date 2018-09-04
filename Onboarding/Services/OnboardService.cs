@@ -84,18 +84,30 @@ namespace Onboarding.Services
         {
             string token = SendMail(value);
 
-            UserAccount user = new UserAccount() { EmailId = value.EmailId, Password = token };
-            _context.UserAccount.Add(user);
-            _context.SaveChanges();
+            var workspace = await _context.Workspace.FirstOrDefaultAsync(x => x.WorkspaceName == value.Workspace);
+
+           // var user = await _context.UserAccount.FirstAsync(x => x.Workspaces.FirstOrDefault(u => u.WorkspaceName == value.EmailId))
+         
+            if (workspace != null)
+            {
+                UserState user = new UserState() { EmailId = value.EmailId, Otp = token };
+                //_context.Workspace.Where(x => x.WorkspaceName == value.Workspace).Include(x => x.UsersState);
+               workspace.UsersState.Add(user);
+               
+                _context.Workspace.Update(workspace);
+               // _context.UserState.Add(user);
+                _context.SaveChanges();
+            }
         }
 
         public async Task<Object> VerifyUser(string token)
         {
-            var user = await _context.UserAccount.FirstOrDefaultAsync(x => x.Password == token);
-            var person = await _context.UserState.FirstOrDefaultAsync(x => x.Otp == token);
-            user.IsVerified = true;
-            person.IsJoined = true;
-            if (user != null || person != null)
+            //var user = await _context.UserAccount.FirstOrDefaultAsync(x => x.Password == token);
+            var user = await _context.UserState.FirstOrDefaultAsync(x => x.Otp == token);
+            //user.IsVerified = true;
+            user.IsJoined = true;
+            _context.SaveChanges();
+            if (user != null)
             {
                 var claims = new[]
                    {
@@ -129,26 +141,41 @@ namespace Onboarding.Services
             _context.SaveChanges();
         }
 
-        public async Task CreateWorkspace(UserAccount workspace)
+        public async Task CreateWorkspace(Workspace workspace)
         {
             //var  unique =  _context.UserAccount.Include(i => i.Workspaces).Where(x => x.Workspaces.TrueForAll(y => y.WorkspaceName == workspace.WorkspaceName));
 
+            var unique = await _context.Workspace.FirstOrDefaultAsync(x => x.WorkspaceName == workspace.WorkspaceName);
 
-            var unique = await _context.Workspace.FirstOrDefaultAsync(i => workspace.Workspaces.Any(y => y.WorkspaceName == i.WorkspaceName));
+           // var unique = await _context.Workspace.FirstOrDefaultAsync(i => workspace.Workspaces.Any(y => y.WorkspaceName == i.WorkspaceName));
             if (unique == null)
             {
-                _context.UserAccount.Add(workspace);
+                _context.Workspace.Add(workspace);
               // UserAccount user =  new UserAccount { new List<Workspace>() { new Workspace { WorkspaceName = workspace.WorkspaceName } } };
                 _context.SaveChanges();
             }
 
         }
 
-        public async Task<IEnumerable> GetAllWorkspace(string value)
-        {
-            var list = _context.UserAccount.Include(x => x.Workspaces).Select(x => x.Workspaces.SelectMany(y => y.WorkspaceName));
+        //public async Task<IEnumerable> GetAllWorkspace(string value)
+        //{
+            //var list = _context.UserAccount.Include(x => x.Workspaces).Select(x => x.Workspaces.SelectMany(y => y.Name));
 
-            return list;
+            //return list;
+       // }
+
+        public async Task PersonalDetails(UserAccount user)
+        {
+            await _context.UserAccount.AddAsync(user);
+            _context.SaveChanges();
+        }
+
+        public async Task WorkSpaceDetails(Workspace workspace)
+        {
+            //var space = await _context.Workspace.FirstOrDefaultAsync(x => x.WorkspaceName == workspace.WorkspaceName);
+            //workspace.Id = space.Id;
+            _context.Workspace.Update(workspace);
+            _context.SaveChanges();
         }
 
     }

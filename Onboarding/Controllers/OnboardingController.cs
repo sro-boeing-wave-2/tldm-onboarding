@@ -22,16 +22,16 @@ namespace Onboarding.Controllers
         }
 
         [HttpPost("create/workspace/email")]
-        public IActionResult OnboardUser([FromBody]LoginViewModel user)
+        public async Task<IActionResult> OnboardUser([FromBody]LoginViewModel user)
         {
-           _controller.OnboardUser(user);
+          await _controller.OnboardUser(user);
             return Ok();
         }
 
         [HttpPost("create/workspace/verify")]
-        public IActionResult Verify([FromBody]string otp)
+        public async Task<IActionResult> Verify([FromBody]string otp)
         {
-            _controller.VerifyUser(otp);
+           await  _controller.VerifyUser(otp);
             return Ok();
         }
 
@@ -44,18 +44,32 @@ namespace Onboarding.Controllers
         }
 
         [HttpPost("create/workspace")]
-        public async Task<IActionResult> CreateWorkspace([FromBody]UserAccount workspace)
+        public async Task<IActionResult> CreateWorkspace([FromBody]Workspace workspace)
         {
            await _controller.CreateWorkspace(workspace);
             return Ok();
         }
 
-        [HttpGet]
-        public IActionResult GetAllWorkspace([FromRoute]string value)
+        [HttpPost("personaldetails")]
+        public async Task<IActionResult> PersonalDetails([FromBody] UserAccount user)
         {
-            var list = _controller.GetAllWorkspace(value);
-            return Ok(list);
+            await _controller.PersonalDetails(user);
+            return Ok();  
         }
+
+        [HttpPut("workspacedetails")]
+        public async Task<IActionResult> WorkspaceDetails([FromBody] Workspace space)
+        {
+            await _controller.WorkSpaceDetails(space);
+            return Ok();
+        }
+
+        //[HttpGet]
+        //public IActionResult GetAllWorkspace([FromRoute]string value)
+        //{
+        //    var list = _controller.GetAllWorkspace(value);
+        //    return Ok(list);
+        //}
 
     }
 }

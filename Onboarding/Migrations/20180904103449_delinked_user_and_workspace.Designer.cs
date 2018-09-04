@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Onboarding.Models;
 
 namespace Onboarding.Migrations
 {
     [DbContext(typeof(OnboardingContext))]
-    partial class OnboardingContextModelSnapshot : ModelSnapshot
+    [Migration("20180904103449_delinked_user_and_workspace")]
+    partial class delinked_user_and_workspace
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

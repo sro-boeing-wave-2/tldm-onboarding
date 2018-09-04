@@ -7,6 +7,11 @@ namespace Onboarding.Models
 {
     public class Workspace
     {
+        public Workspace()
+        {
+            this.UsersState = new List<UserState>();
+            this.Channels = new List<Channel>();
+        }
         public int Id { get; set; }
 
         public string WorkspaceName { get; set; }
