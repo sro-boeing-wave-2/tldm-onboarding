@@ -18,7 +18,5 @@ namespace Onboarding.Models
 
 
         public List<UserState> UsersState { get; set; }
-        //public List<JoinedUser> JoinedUsers { get; set; }
-        //public List<TotalUser> TotalUsers { get; set; }
     }
 }

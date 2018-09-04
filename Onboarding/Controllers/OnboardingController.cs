@@ -43,15 +43,15 @@ namespace Onboarding.Controllers
             return Ok();
         }
 
-        [HttpPost("workspace")]
-        public IActionResult CreateWorkspace([FromBody]Workspace workspace)
+        [HttpPost("create/workspace")]
+        public async Task<IActionResult> CreateWorkspace([FromBody]UserAccount workspace)
         {
-            _controller.CreateWorkspace(workspace);
+           await _controller.CreateWorkspace(workspace);
             return Ok();
         }
 
         [HttpGet]
-        public IActionResult GetAllWorkspace(string value)
+        public IActionResult GetAllWorkspace([FromRoute]string value)
         {
             var list = _controller.GetAllWorkspace(value);
             return Ok(list);

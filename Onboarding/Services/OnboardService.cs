@@ -93,6 +93,8 @@ namespace Onboarding.Services
         {
             var user = await _context.UserAccount.FirstOrDefaultAsync(x => x.Password == token);
             var person = await _context.UserState.FirstOrDefaultAsync(x => x.Otp == token);
+            user.IsVerified = true;
+            person.IsJoined = true;
             if (user != null || person != null)
             {
                 var claims = new[]
@@ -127,10 +129,19 @@ namespace Onboarding.Services
             _context.SaveChanges();
         }
 
-        public async Task CreateWorkspace(Workspace workspace)
+        public async Task CreateWorkspace(UserAccount workspace)
         {
-            _context.Workspace.Add(workspace);
-            _context.SaveChanges();
+            //var  unique =  _context.UserAccount.Include(i => i.Workspaces).Where(x => x.Workspaces.TrueForAll(y => y.WorkspaceName == workspace.WorkspaceName));
+
+
+            var unique = await _context.Workspace.FirstOrDefaultAsync(i => workspace.Workspaces.Any(y => y.WorkspaceName == i.WorkspaceName));
+            if (unique == null)
+            {
+                _context.UserAccount.Add(workspace);
+              // UserAccount user =  new UserAccount { new List<Workspace>() { new Workspace { WorkspaceName = workspace.WorkspaceName } } };
+                _context.SaveChanges();
+            }
+
         }
 
         public async Task<IEnumerable> GetAllWorkspace(string value)

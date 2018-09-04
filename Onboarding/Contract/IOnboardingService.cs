@@ -24,7 +24,7 @@ namespace Onboarding.Contract
 
         //Task PersonalDetails(UserAccount user);
 
-        Task CreateWorkspace(Workspace workspace);
+        Task CreateWorkspace(UserAccount workspace);
 
         Task<IEnumerable> GetAllWorkspace(string emailId);
     }
