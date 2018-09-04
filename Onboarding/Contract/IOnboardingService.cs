@@ -1,5 +1,6 @@
 ﻿using Onboarding.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ namespace Onboarding.Contract
     public interface IOnboardingService
     {
 
-        Task OnboardUser(string email);
+        Task OnboardUser(LoginViewModel email);
 
         Task OnboardUserFromWorkspace(LoginViewModel user);
 
@@ -19,12 +20,12 @@ namespace Onboarding.Contract
 
         //Task SendMail(string email);
 
-        Task Login(LoginViewModel model);
+        //Task Login(LoginViewModel model);
 
-        Task PersonalDetails(UserAccount user);
+        //Task PersonalDetails(UserAccount user);
 
-        Task WorkspaceDetails(Workspace workspace);
+        Task CreateWorkspace(Workspace workspace);
 
-        Task GetAllWorkspace(string emailId);
+        Task<IEnumerable> GetAllWorkspace(string emailId);
     }
 }

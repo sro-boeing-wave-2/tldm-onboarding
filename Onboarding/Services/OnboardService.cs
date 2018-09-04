@@ -4,6 +4,7 @@ using MimeKit;
 using Onboarding.Contract;
 using Onboarding.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
@@ -132,9 +133,11 @@ namespace Onboarding.Services
             _context.SaveChanges();
         }
 
-        public async Task GetAllWorkspace(string value)
+        public async Task<IEnumerable> GetAllWorkspace(string value)
         {
             var list = _context.UserAccount.Include(x => x.Workspaces).Select(x => x.Workspaces.SelectMany(y => y.WorkspaceName));
+
+            return list;
         }
 
     }
