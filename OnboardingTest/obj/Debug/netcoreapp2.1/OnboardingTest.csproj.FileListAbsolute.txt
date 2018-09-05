@@ -12,3 +12,6 @@ E:\workspace\Onboarding\Onboarding\OnboardingTest\obj\Debug\netcoreapp2.1\Onboar
 E:\workspace\Onboarding\Onboarding\OnboardingTest\obj\Debug\netcoreapp2.1\OnboardingTest.AssemblyInfoInputs.cache
 E:\workspace\Onboarding\Onboarding\OnboardingTest\obj\Debug\netcoreapp2.1\OnboardingTest.AssemblyInfo.cs
 E:\workspace\Onboarding\Onboarding\OnboardingTest\obj\Debug\netcoreapp2.1\OnboardingTest.csproj.CopyComplete
+E:\workspace\Onboarding\Onboarding\OnboardingTest\bin\Debug\netcoreapp2.1\OnboardingTest.pdb
+E:\workspace\Onboarding\Onboarding\OnboardingTest\obj\Debug\netcoreapp2.1\OnboardingTest.dll
+E:\workspace\Onboarding\Onboarding\OnboardingTest\obj\Debug\netcoreapp2.1\OnboardingTest.pdb

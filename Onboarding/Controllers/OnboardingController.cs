@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -29,10 +30,14 @@ namespace Onboarding.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            await _controller.OnboardUser(user);
-            return Ok();
+            var result = await _controller.OnboardUser(user);
+            //if (result != null)
+            //{
+            //    return Ok(result);
+            //}
+            return Ok(result);
         }
+
 
         [HttpPost("create/workspace/verify")]
         public async Task<IActionResult> Verify([FromBody]string otp)
@@ -75,6 +80,7 @@ namespace Onboarding.Controllers
             return Ok();
         }
 
+        [Authorize]
         [HttpPost("personaldetails")]
         public async Task<IActionResult> PersonalDetails([FromBody] UserAccount user)
         {
@@ -84,7 +90,7 @@ namespace Onboarding.Controllers
             }
 
             await _controller.PersonalDetails(user);
-            return Ok();  
+            return Ok(user);  
         }
 
         [HttpPost("login")]
@@ -115,7 +121,7 @@ namespace Onboarding.Controllers
             await _controller.WorkSpaceDetails(space);
             return Ok();
         }
-
+        [Authorize]
         [HttpGet("{value}")]
         public async Task<IActionResult> GetAllWorkspace([FromRoute]string value)
         {

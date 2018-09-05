@@ -80,24 +80,57 @@ namespace Onboarding.Services
             return token;
         }
 
-        public async Task OnboardUser(LoginViewModel value)
+        public async Task CreateWorkspace(Workspace workspace)
         {
-            string token = SendMail(value);
+            //var  unique =  _context.UserAccount.Include(i => i.Workspaces).Where(x => x.Workspaces.TrueForAll(y => y.WorkspaceName == workspace.WorkspaceName));
+
+            var unique = await _context.Workspace.FirstOrDefaultAsync(x => x.WorkspaceName == workspace.WorkspaceName);
+
+            // var unique = await _context.Workspace.FirstOrDefaultAsync(i => workspace.Workspaces.Any(y => y.WorkspaceName == i.WorkspaceName));
+            if (unique == null)
+            {
+                _context.Workspace.Add(workspace);
+                // UserAccount user =  new UserAccount { new List<Workspace>() { new Workspace { WorkspaceName = workspace.WorkspaceName } } };
+                _context.SaveChanges();
+            }
+        }
+
+        public async Task<Object> OnboardUser(LoginViewModel value)
+        {
 
             var workspace = await _context.Workspace.FirstOrDefaultAsync(x => x.WorkspaceName == value.Workspace);
 
-           // var user = await _context.UserAccount.FirstAsync(x => x.Workspaces.FirstOrDefault(u => u.WorkspaceName == value.EmailId))
-         
+            // var user = await _context.UserAccount.FirstAsync(x => x.Workspaces.FirstOrDefault(u => u.WorkspaceName == value.EmailId))
+
             if (workspace != null)
             {
+                string token = SendMail(value);
+
                 UserState user = new UserState() { EmailId = value.EmailId, Otp = token };
                 //_context.Workspace.Where(x => x.WorkspaceName == value.Workspace).Include(x => x.UsersState);
                workspace.UsersState.Add(user);
-               
+
+                var newuser = await _context.UserAccount.Include(i => i.Workspaces).FirstOrDefaultAsync(x => x.EmailId == value.EmailId);
+
+                if (newuser == null)
+                {
+                    UserAccount details = new UserAccount() { EmailId = value.EmailId };
+                    await _context.UserAccount.AddAsync(details);
+                    _context.SaveChanges();
+                }
+                //else
+                //{
+                //    newuser.Workspaces.AddRange(user.Workspaces);
+                //    _context.UserAccount.Update(newuser);
+                //    _context.SaveChanges();
+                //}
+
                 _context.Workspace.Update(workspace);
                // _context.UserState.Add(user);
                 _context.SaveChanges();
+                return user;
             }
+            return null;
         }
 
         public async Task<Object> VerifyUser(string token)
@@ -105,8 +138,8 @@ namespace Onboarding.Services
             //var user = await _context.UserAccount.FirstOrDefaultAsync(x => x.Password == token);
             var user = await _context.UserState.FirstOrDefaultAsync(x => x.Otp == token);
             //user.IsVerified = true;
-            user.IsJoined = true;
-            _context.SaveChanges();
+            //user.IsJoined = true;
+            //_context.SaveChanges();
             if (user != null)
             {
                 var claims = new[]
@@ -122,6 +155,9 @@ namespace Onboarding.Services
                     claims: claims,
                     signingCredentials: new Microsoft.IdentityModel.Tokens.SigningCredentials(signinKey, SecurityAlgorithms.HmacSha256));
 
+                user.IsJoined = true;
+                _context.SaveChanges();
+
                 return new
                 {
                     token = new JwtSecurityTokenHandler().WriteToken(Jwtoken),
@@ -131,6 +167,32 @@ namespace Onboarding.Services
 
             return user;
         }
+
+        public async Task PersonalDetails(UserAccount user)
+        {
+            var newuser = await _context.UserAccount.Include(i => i.Workspaces).FirstOrDefaultAsync(x => x.EmailId == user.EmailId);
+
+            if (newuser == null)
+            {
+                await _context.UserAccount.AddAsync(newuser);
+                _context.SaveChanges();
+            }
+            else
+            {
+                newuser.Workspaces.AddRange(user.Workspaces);
+                _context.UserAccount.Update(newuser);
+                _context.SaveChanges();
+            }
+        }
+
+        public async Task WorkSpaceDetails(Workspace workspace)
+        {
+            //var space = await _context.Workspace.FirstOrDefaultAsync(x => x.WorkspaceName == workspace.WorkspaceName);
+            //workspace.Id = space.Id;
+            _context.Workspace.Update(workspace);
+            _context.SaveChanges();
+        }
+
 
         public async Task OnboardUserFromWorkspace(LoginViewModel value)
         {
@@ -149,24 +211,6 @@ namespace Onboarding.Services
             }
         }
 
-        public async Task CreateWorkspace(Workspace workspace)
-        {
-            //var  unique =  _context.UserAccount.Include(i => i.Workspaces).Where(x => x.Workspaces.TrueForAll(y => y.WorkspaceName == workspace.WorkspaceName));
-
-            var unique = await _context.Workspace.FirstOrDefaultAsync(x => x.WorkspaceName == workspace.WorkspaceName);
-
-           // var unique = await _context.Workspace.FirstOrDefaultAsync(i => workspace.Workspaces.Any(y => y.WorkspaceName == i.WorkspaceName));
-            if (unique == null)
-            {
-                _context.Workspace.Add(workspace);
-              // UserAccount user =  new UserAccount { new List<Workspace>() { new Workspace { WorkspaceName = workspace.WorkspaceName } } };
-                _context.SaveChanges();
-            }
-
-            
-
-        }
-
         public async Task<IEnumerable> GetAllWorkspace(string value)
         {
             // var list = _context.UserAccount.Include(x => x.Workspaces).Where(c => c.Workspaces.Any(u => u.Name == u.Name));
@@ -174,20 +218,6 @@ namespace Onboarding.Services
             var list = user.Workspaces.Select(v => v.Name);
 
             return list;
-        }
-
-        public async Task PersonalDetails(UserAccount user)
-        {
-            await _context.UserAccount.AddAsync(user);
-            _context.SaveChanges();
-        }
-
-        public async Task WorkSpaceDetails(Workspace workspace)
-        {
-            //var space = await _context.Workspace.FirstOrDefaultAsync(x => x.WorkspaceName == workspace.WorkspaceName);
-            //workspace.Id = space.Id;
-            _context.Workspace.Update(workspace);
-            _context.SaveChanges();
         }
 
         public async Task<object> Login(LoginViewModel login)

@@ -10,7 +10,7 @@ namespace Onboarding.Contract
     public interface IOnboardingService
     {
 
-        Task OnboardUser(LoginViewModel email);
+        Task<Object> OnboardUser(LoginViewModel email);
 
         Task OnboardUserFromWorkspace(LoginViewModel user);
 

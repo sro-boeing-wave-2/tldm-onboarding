@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Onboarding.Models;
 
 namespace Onboarding.Migrations
 {
     [DbContext(typeof(OnboardingContext))]
-    partial class OnboardingContextModelSnapshot : ModelSnapshot
+    [Migration("20180905064811_fifth")]
+    partial class fifth
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,7 +54,11 @@ namespace Onboarding.Migrations
 
                     b.Property<string>("Password");
 
+                    b.Property<int?>("WorkspaceId");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("WorkspaceId");
 
                     b.ToTable("UserAccount");
                 });
@@ -76,19 +82,6 @@ namespace Onboarding.Migrations
                     b.HasIndex("WorkspaceId");
 
                     b.ToTable("UserState");
-                });
-
-            modelBuilder.Entity("Onboarding.Models.UserWorkspace", b =>
-                {
-                    b.Property<int>("UserId");
-
-                    b.Property<int>("WorkspaceId");
-
-                    b.HasKey("UserId", "WorkspaceId");
-
-                    b.HasIndex("WorkspaceId");
-
-                    b.ToTable("UserWorkspace");
                 });
 
             modelBuilder.Entity("Onboarding.Models.Workspace", b =>
@@ -130,24 +123,18 @@ namespace Onboarding.Migrations
                         .HasForeignKey("WorkspaceId");
                 });
 
+            modelBuilder.Entity("Onboarding.Models.UserAccount", b =>
+                {
+                    b.HasOne("Onboarding.Models.Workspace")
+                        .WithMany("UserAccounts")
+                        .HasForeignKey("WorkspaceId");
+                });
+
             modelBuilder.Entity("Onboarding.Models.UserState", b =>
                 {
                     b.HasOne("Onboarding.Models.Workspace")
                         .WithMany("UsersState")
                         .HasForeignKey("WorkspaceId");
-                });
-
-            modelBuilder.Entity("Onboarding.Models.UserWorkspace", b =>
-                {
-                    b.HasOne("Onboarding.Models.UserAccount", "UserAccount")
-                        .WithMany("UserWorkspaces")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Onboarding.Models.Workspace", "Workspace")
-                        .WithMany("UserWorkspaces")
-                        .HasForeignKey("WorkspaceId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Onboarding.Models.WorkspaceName", b =>

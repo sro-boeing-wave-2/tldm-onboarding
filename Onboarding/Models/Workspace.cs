@@ -21,7 +21,8 @@ namespace Onboarding.Models
 
         public List<Channel> Channels { get; set; }
 
-
         public List<UserState> UsersState { get; set; }
+
+        public List<UserWorkspace> UserWorkspaces { get; set; }
     }
 }
