@@ -88,7 +88,7 @@ namespace Onboarding.Migrations
 
                     b.HasIndex("WorkspaceId");
 
-                    b.ToTable("UserWorkspace");
+                    b.ToTable("UserWorkspaces");
                 });
 
             modelBuilder.Entity("Onboarding.Models.Workspace", b =>

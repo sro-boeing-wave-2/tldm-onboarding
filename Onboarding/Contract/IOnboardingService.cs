@@ -1,8 +1,6 @@
 ﻿using Onboarding.Models;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Onboarding.Contract
@@ -16,12 +14,6 @@ namespace Onboarding.Contract
 
         Task<Object> VerifyUser(string otp);
 
-        //Task JwtGenerator(LoginViewModel model);
-
-        //Task SendMail(string email);
-
-        //Task Login(LoginViewModel model);
-
         Task PersonalDetails(UserAccount user);
 
         Task WorkSpaceDetails(Workspace workspace);
@@ -31,5 +23,7 @@ namespace Onboarding.Contract
         Task<Object> Login(LoginViewModel login);
 
         Task<IEnumerable> GetAllWorkspace(string emailId);
+
+        Task<Workspace> GetWorkspaceByName(string name);
     }
 }

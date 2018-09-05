@@ -16,6 +16,7 @@ namespace Onboarding.Models
         public DbSet<Onboarding.Models.UserAccount> UserAccount { get; set; }
         public DbSet<Onboarding.Models.Workspace> Workspace { get; set; }
         public DbSet<Onboarding.Models.UserState> UserState { get; set; }
+        public DbSet<Onboarding.Models.UserWorkspace> UserWorkspaces { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

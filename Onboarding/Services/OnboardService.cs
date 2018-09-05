@@ -5,7 +5,6 @@ using Onboarding.Contract;
 using Onboarding.Models;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -115,7 +114,7 @@ namespace Onboarding.Services
                 if (newuser == null)
                 {
                     UserAccount details = new UserAccount() { EmailId = value.EmailId };
-                    await _context.UserAccount.AddAsync(details);
+                    await _context.UserWorkspaces.AddAsync(new UserWorkspace { Workspace = workspace, UserAccount = details });
                     _context.SaveChanges();
                 }
                 //else
@@ -172,27 +171,27 @@ namespace Onboarding.Services
         {
             var newuser = await _context.UserAccount.Include(i => i.Workspaces).FirstOrDefaultAsync(x => x.EmailId == user.EmailId);
 
-            if (newuser == null)
-            {
-                await _context.UserAccount.AddAsync(newuser);
+            // if (newuser == null)
+            // {
+            user.Id = newuser.Id;
+                 _context.UserAccount.Update(user);
                 _context.SaveChanges();
-            }
-            else
-            {
-                newuser.Workspaces.AddRange(user.Workspaces);
-                _context.UserAccount.Update(newuser);
-                _context.SaveChanges();
-            }
+           // }
+           // else
+            //{
+                //newuser.Workspaces.AddRange(user.Workspaces);
+                //_context.UserAccount.Update(newuser);
+                //_context.SaveChanges();
+            //}
         }
 
         public async Task WorkSpaceDetails(Workspace workspace)
         {
-            //var space = await _context.Workspace.FirstOrDefaultAsync(x => x.WorkspaceName == workspace.WorkspaceName);
-            //workspace.Id = space.Id;
+            var space = await _context.Workspace.FirstOrDefaultAsync(x => x.WorkspaceName == workspace.WorkspaceName);
+            workspace.Id = space.Id;
             _context.Workspace.Update(workspace);
             _context.SaveChanges();
         }
-
 
         public async Task OnboardUserFromWorkspace(LoginViewModel value)
         {
@@ -203,7 +202,21 @@ namespace Onboarding.Services
             if (user == null)
             {
                 var otp = SendMail(value);
-                
+                var newuser = await _context.UserAccount.Include(i => i.Workspaces).FirstOrDefaultAsync(x => x.EmailId == value.EmailId);
+
+                if (newuser == null)
+                {
+                    var details = new UserAccount() { EmailId = value.EmailId };
+                    await _context.UserWorkspaces.AddAsync(new UserWorkspace { Workspace = workspace, UserAccount = details });
+                    await _context.UserAccount.AddAsync(details);
+                    _context.SaveChanges();
+                }
+                //else
+                //{
+                //    newuser.Workspaces.AddRange(user.Workspaces);
+                //    _context.UserAccount.Update(newuser);
+                //    _context.SaveChanges();
+                //}
                 UserState newUser = new UserState() { EmailId = value.EmailId, Otp = otp };
                 workspace.UsersState.Add(newUser);
                 _context.Workspace.Update(workspace);
@@ -252,6 +265,14 @@ namespace Onboarding.Services
             }
 
             return null;
+        }
+
+        public async Task<Workspace> GetWorkspaceByName(string name)
+        {
+            var space = await _context.Workspace.Include(x => x.UsersState).Include(y => y.Channels)
+                .Include(z => z.UserWorkspaces).FirstOrDefaultAsync(i => i.WorkspaceName == name);
+            //var user = await _context.UserAccount.FirstOrDefaultAsync(i => i.EmailId == name);
+            return space;
         }
 
     }
