@@ -171,18 +171,18 @@ namespace Onboarding.Services
         {
             var newuser = await _context.UserAccount.Include(i => i.Workspaces).FirstOrDefaultAsync(x => x.EmailId == user.EmailId);
 
-            // if (newuser == null)
-            // {
-            user.Id = newuser.Id;
-                 _context.UserAccount.Update(user);
+            if (newuser == null)
+             {
+                    user.Id = newuser.Id;
+                    _context.UserAccount.Update(user);
+                    _context.SaveChanges();
+            }
+           else
+            {
+                newuser.Workspaces.AddRange(user.Workspaces);
+                _context.UserAccount.Update(newuser);
                 _context.SaveChanges();
-           // }
-           // else
-            //{
-                //newuser.Workspaces.AddRange(user.Workspaces);
-                //_context.UserAccount.Update(newuser);
-                //_context.SaveChanges();
-            //}
+            }
         }
 
         public async Task WorkSpaceDetails(Workspace workspace)

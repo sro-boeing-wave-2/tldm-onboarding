@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Onboarding.Models
 {
@@ -9,7 +10,9 @@ namespace Onboarding.Models
             this.UsersState = new List<UserState>();
             this.Channels = new List<Channel>();
         }
-        public int Id { get; set; }
+
+        [Key]
+        public string Id { get; set; }
 
         public string WorkspaceName { get; set; }
 

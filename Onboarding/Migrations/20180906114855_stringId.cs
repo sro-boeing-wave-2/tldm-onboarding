@@ -1,9 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Onboarding.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class stringId : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -11,8 +10,7 @@ namespace Onboarding.Migrations
                 name: "UserAccount",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<string>(nullable: false),
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
                     EmailId = table.Column<string>(nullable: true),
@@ -28,8 +26,7 @@ namespace Onboarding.Migrations
                 name: "Workspace",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<string>(nullable: false),
                     WorkspaceName = table.Column<string>(nullable: true),
                     PictureUrl = table.Column<string>(nullable: true)
                 },
@@ -42,10 +39,9 @@ namespace Onboarding.Migrations
                 name: "WorkspaceName",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<string>(nullable: false),
                     Name = table.Column<string>(nullable: true),
-                    UserAccountId = table.Column<int>(nullable: true)
+                    UserAccountId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -62,10 +58,9 @@ namespace Onboarding.Migrations
                 name: "Channel",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<string>(nullable: false),
                     ChannelName = table.Column<string>(nullable: true),
-                    WorkspaceId = table.Column<int>(nullable: true)
+                    WorkspaceId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -82,12 +77,11 @@ namespace Onboarding.Migrations
                 name: "UserState",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<string>(nullable: false),
                     EmailId = table.Column<string>(nullable: true),
                     IsJoined = table.Column<bool>(nullable: false),
                     Otp = table.Column<string>(nullable: true),
-                    WorkspaceId = table.Column<int>(nullable: true)
+                    WorkspaceId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -104,8 +98,8 @@ namespace Onboarding.Migrations
                 name: "UserWorkspaces",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(nullable: false),
-                    WorkspaceId = table.Column<int>(nullable: false)
+                    UserId = table.Column<string>(nullable: false),
+                    WorkspaceId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {

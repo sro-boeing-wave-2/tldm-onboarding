@@ -7,9 +7,9 @@ namespace Onboarding.Models
 {
     public class UserWorkspace
     {
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public UserAccount UserAccount { get; set; }
-        public int WorkspaceId { get; set; }
+        public string WorkspaceId { get; set; }
         public Workspace Workspace { get; set; }
     }
 }
