@@ -23,11 +23,11 @@ namespace Onboarding
 
         public IConfiguration Configuration { get; }
 
-       // This method gets called by the runtime.Use this method to add services to the container.
+        // This method gets called by the runtime.Use this method to add services to the container.
 
         // Added for docker support
 
-        //public Startup(IConfiguration configuration,IHostingEnvironment environment)
+        //public Startup(IConfiguration configuration, IHostingEnvironment environment)
         //{
         //    Configuration = configuration;
         //    Environment = environment;
@@ -40,17 +40,14 @@ namespace Onboarding
         {
             //for docker 
 
-           // var connection = @"Server=db;Database=OnboardingContext;User=sa;Password=YourStrongP@ssword;";
+            //var connection = @"Server=db;Database=OnboardingContext;User=sa;Password=YourStrongP@ssword;";
 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
             });
 
-            //services.AddCors(
-            //    options => options.AddPolicy("AllowSpecificOrigin",
-            //    builder => builder.WithOrigins("http://localhost:4200"))
-            //    );
+            
 
             services.AddCors(o => o.AddPolicy("AppPolicy", builder =>
             builder.AllowAnyHeader()
@@ -65,8 +62,8 @@ namespace Onboarding
 
             //if (Environment.IsEnvironment("Testing"))
             //{
-            //services.AddDbContext<VerificationContext>(options =>
-            //        options.UseSqlServer(Configuration.GetConnectionString("VerificationContext")));
+            //    services.AddDbContext<OnboardingContext>(options =>
+            //            options.UseSqlServer(Configuration.GetConnectionString("OnboardingContext")));
             //    services.AddDbContext<OnboardingContext>(options =>
             //        options.UseInMemoryDatabase("TestingDB"));
             //}

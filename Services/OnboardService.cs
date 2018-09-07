@@ -62,7 +62,7 @@ namespace Onboarding.Services
             {
                 message.Body = new TextPart("plain")
                 {
-                    Text = "Welcome to TL;DM You have been invited to join " + value.Workspace + " Your Temporary token is " + token + "Welcome Aboard!"
+                    Text = "Welcome to TL;DM You have been invited to join " + value.Workspace + " Your Temporary token is " + token + " Welcome Aboard!"
                 };
             }
 
@@ -135,7 +135,47 @@ namespace Onboarding.Services
         public async Task<Object> VerifyUser(string token)
         {
             //var user = await _context.UserAccount.FirstOrDefaultAsync(x => x.Password == token);
+            //var space = await _context.Workspace.Include(i => i.UsersState).FirstOrDefaultAsync(x => x.WorkspaceName == token.Workspace);
             var user = await _context.UserState.FirstOrDefaultAsync(x => x.Otp == token);
+            //var user = space.UsersState.FirstOrDefault(x => x.Otp == token.Password);
+            //user.IsVerified = true;
+            //user.IsJoined = true;
+            //_context.SaveChanges();
+            if (user != null)
+            {
+                var claims = new[]
+                   {
+                       new Claim(JwtRegisteredClaimNames.Email,user.EmailId),
+                   };
+
+                var signinKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySuperSecureKey"));
+                var Jwtoken = new JwtSecurityToken(
+                    issuer: "http://oec.com",
+                    audience: "http://oec.com",
+                    expires: DateTime.UtcNow.AddHours(1),
+                    claims: claims,
+                    signingCredentials: new Microsoft.IdentityModel.Tokens.SigningCredentials(signinKey, SecurityAlgorithms.HmacSha256));
+
+                user.IsJoined = true;
+                _context.SaveChanges();
+
+                return new
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(Jwtoken),
+                    expiration = Jwtoken.ValidTo
+                };
+            }
+
+            return user;
+        }
+
+
+        public async Task<Object> VerifyInvitedUser(LoginViewModel token)
+        {
+            //var user = await _context.UserAccount.FirstOrDefaultAsync(x => x.Password == token);
+            var space = await _context.Workspace.Include(i => i.UsersState).FirstOrDefaultAsync(x => x.WorkspaceName == token.Workspace);
+            //var user = await _context.UserState.FirstOrDefaultAsync(x => x.Otp == token);
+            var user = space.UsersState.FirstOrDefault(x => x.Otp == token.Password);
             //user.IsVerified = true;
             //user.IsJoined = true;
             //_context.SaveChanges();
@@ -177,7 +217,16 @@ namespace Onboarding.Services
                 newuser.LastName = user.LastName;
                 newuser.Password = user.Password;
                 newuser.IsVerified = true;
-                newuser.Workspaces.AddRange(user.Workspaces);
+
+                var workspaceName = user.Workspaces.Select(i => i.Name).ToList();
+               // workspaceName.BinarySearch
+               //newuser.Workspaces.BinarySearch(workspaceName.)
+                var v = newuser.Workspaces.Exists(x => x.Name == workspaceName[0]);
+                if(!v)
+                {
+                    newuser.Workspaces.AddRange(user.Workspaces);
+                    //newuser.Workspaces.ToHashSet();
+                }
 
                  _context.UserAccount.Update(newuser);
                 _context.SaveChanges();
@@ -197,17 +246,17 @@ namespace Onboarding.Services
             // workspace.Id = space.Id;
             space.Channels.AddRange(workspace.Channels);
             space.PictureUrl = workspace.PictureUrl;
-            space.UsersState.AddRange(workspace.UsersState);
+           // space.UsersState.AddRange(workspace.UsersState);
            
             _context.Workspace.Update(space);
             _context.SaveChanges();
             return space;
         }
 
-        public async Task OnboardUserFromWorkspace(LoginViewModel value)
+        public async Task<Object> OnboardUserFromWorkspace(LoginViewModel value)
         {
             //var user = await _context.Workspace.Include(x => x.UsersState).FirstOrDefaultAsync(v => v.UsersState.Exists(o => o.EmailId == value.EmailId));
-            var workspace = await _context.Workspace.FirstOrDefaultAsync(x => x.WorkspaceName == value.Workspace);
+            var workspace = await _context.Workspace.Include(i => i.UsersState).FirstOrDefaultAsync(x => x.WorkspaceName == value.Workspace);
             var user = workspace.UsersState.FirstOrDefault(x => x.EmailId == value.EmailId);
 
             if (user == null)
@@ -221,18 +270,28 @@ namespace Onboarding.Services
                     await _context.UserWorkspaces.AddAsync(new UserWorkspace { Workspace = workspace, UserAccount = details });
                     await _context.UserAccount.AddAsync(details);
                     _context.SaveChanges();
+                    return details;
                 }
-                //else
-                //{
-                //    newuser.Workspaces.AddRange(user.Workspaces);
-                //    _context.UserAccount.Update(newuser);
-                //    _context.SaveChanges();
-                //}
                 UserState newUser = new UserState() { EmailId = value.EmailId, Otp = otp };
                 workspace.UsersState.Add(newUser);
                 _context.Workspace.Update(workspace);
                 _context.SaveChanges();
+                return newUser;
+
             }
+
+            //else
+            //{
+            //    newuser.Workspaces.AddRange(user.Workspaces);
+            //    _context.UserAccount.Update(newuser);
+            //    _context.SaveChanges();
+            //}
+            //UserState newUser = new UserState() { EmailId = value.EmailId, Otp = otp };
+            //workspace.UsersState.Add(newUser);
+            //_context.Workspace.Update(workspace);
+            //_context.SaveChanges();
+            return null;
+
         }
 
         public async Task<IEnumerable> GetAllWorkspace(string value)

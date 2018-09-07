@@ -59,9 +59,32 @@ namespace Onboarding.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _controller.OnboardUserFromWorkspace(user);
-            return Ok();
+            var result = await _controller.OnboardUserFromWorkspace(user);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result);
+
         }
+
+        [HttpPost("invite/verify")]
+        public async Task<IActionResult> VerifyInvitedUser([FromBody]LoginViewModel otp)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _controller.VerifyInvitedUser(otp);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return Unauthorized();
+        }
+
 
         [HttpPost("create/workspace")]
         public async Task<IActionResult> CreateWorkspace([FromBody]Workspace workspace)
@@ -116,6 +139,7 @@ namespace Onboarding.Controllers
             var space1 = await _controller.WorkSpaceDetails(space);
             return Ok(space1);
         }
+
         [Authorize]
         [HttpGet("{value}")]
         public async Task<IActionResult> GetAllWorkspace([FromRoute]string value)
