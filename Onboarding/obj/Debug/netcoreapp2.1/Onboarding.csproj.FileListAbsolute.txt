@@ -1,0 +1,15 @@
+E:\workspace\Onboarding\Onboarding\Onboarding\bin\Debug\netcoreapp2.1\Onboarding.deps.json
+E:\workspace\Onboarding\Onboarding\Onboarding\bin\Debug\netcoreapp2.1\Onboarding.runtimeconfig.json
+E:\workspace\Onboarding\Onboarding\Onboarding\bin\Debug\netcoreapp2.1\Onboarding.runtimeconfig.dev.json
+E:\workspace\Onboarding\Onboarding\Onboarding\bin\Debug\netcoreapp2.1\Onboarding.dll
+E:\workspace\Onboarding\Onboarding\Onboarding\bin\Debug\netcoreapp2.1\Onboarding.pdb
+E:\workspace\Onboarding\Onboarding\Onboarding\obj\Debug\netcoreapp2.1\Onboarding.csproj.CoreCompileInputs.cache
+E:\workspace\Onboarding\Onboarding\Onboarding\obj\Debug\netcoreapp2.1\Onboarding.RazorAssemblyInfo.cache
+E:\workspace\Onboarding\Onboarding\Onboarding\obj\Debug\netcoreapp2.1\Onboarding.RazorAssemblyInfo.cs
+E:\workspace\Onboarding\Onboarding\Onboarding\obj\Debug\netcoreapp2.1\Onboarding.AssemblyInfoInputs.cache
+E:\workspace\Onboarding\Onboarding\Onboarding\obj\Debug\netcoreapp2.1\Onboarding.AssemblyInfo.cs
+E:\workspace\Onboarding\Onboarding\Onboarding\obj\Debug\netcoreapp2.1\Onboarding.RazorTargetAssemblyInfo.cache
+E:\workspace\Onboarding\Onboarding\Onboarding\obj\Debug\netcoreapp2.1\Onboarding.dll
+E:\workspace\Onboarding\Onboarding\Onboarding\obj\Debug\netcoreapp2.1\Onboarding.pdb
+E:\workspace\Onboarding\Onboarding\Onboarding\obj\Debug\netcoreapp2.1\UserSecretsAssemblyInfo.cs
+E:\workspace\Onboarding\Onboarding\Onboarding\obj\Debug\netcoreapp2.1\Onboarding.csprojAssemblyReference.cache

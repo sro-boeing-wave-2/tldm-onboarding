@@ -1,0 +1,19 @@
+services:
+  onboarding:
+    build:
+      context: E:\workspace\Onboarding\Onboarding
+      dockerfile: Onboarding/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTPS_PORT: '44360'
+      ASPNETCORE_URLS: https://+:443;http://+:80
+    image: onboarding
+    ports:
+    - published: 51453
+      target: 80
+    - published: 44360
+      target: 443
+    volumes:
+    - C:\Users\Admin\AppData\Roaming\ASP.NET\Https:/root/.aspnet/https:ro
+    - C:\Users\Admin\AppData\Roaming\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro
+version: '3.4'
