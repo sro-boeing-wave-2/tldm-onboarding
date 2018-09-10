@@ -75,7 +75,7 @@ namespace Onboarding.Controllers
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
-            }
+            }  
 
             var result = await _controller.VerifyInvitedUser(otp);
             if (result != null)
