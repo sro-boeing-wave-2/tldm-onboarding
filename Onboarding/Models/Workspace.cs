@@ -8,6 +8,7 @@ namespace Onboarding.Models
         {
             this.UsersState = new List<UserState>();
             this.Channels = new List<Channel>();
+            this.Bots = new List<Bot>();
         }
         public string Id { get; set; }
 

@@ -16,31 +16,31 @@ namespace Onboarding
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        //public Startup(IConfiguration configuration)
+        //{
+        //    Configuration = configuration;
+        //}
 
-        public IConfiguration Configuration { get; }
+        //public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime.Use this method to add services to the container.
 
         // Added for docker support
 
-        //public Startup(IConfiguration configuration, IHostingEnvironment environment)
-        //{
-        //    Configuration = configuration;
-        //    Environment = environment;
-        //}
+        public Startup(IConfiguration configuration, IHostingEnvironment environment)
+        {
+            Configuration = configuration;
+            Environment = environment;
+        }
 
-        //public IConfiguration Configuration { get; }
-        //public IHostingEnvironment Environment { get; }
+        public IConfiguration Configuration { get; }
+        public IHostingEnvironment Environment { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
             //for docker 
 
-            //var connection = @"Server=db;Database=OnboardingContext;User=sa;Password=YourStrongP@ssword;";
+            var connection = @"Server=db;Database=OnboardingContext;User=sa;Password=YourStrongP@ssword;";
 
             services.AddSwaggerGen(c =>
             {
@@ -60,18 +60,18 @@ namespace Onboarding
 
             //for docker 
 
-            //if (Environment.IsEnvironment("Testing"))
-            //{
-            //    services.AddDbContext<OnboardingContext>(options =>
-            //            options.UseSqlServer(Configuration.GetConnectionString("OnboardingContext")));
-            //    services.AddDbContext<OnboardingContext>(options =>
-            //        options.UseInMemoryDatabase("TestingDB"));
-            //}
-            //else
-            //{
-            //    services.AddDbContext<OnboardingContext>(options =>
-            //       options.UseSqlServer(connection));
-            //}
+            if (Environment.IsEnvironment("Testing"))
+            {
+                services.AddDbContext<OnboardingContext>(options =>
+                        options.UseSqlServer(Configuration.GetConnectionString("OnboardingContext")));
+                services.AddDbContext<OnboardingContext>(options =>
+                    options.UseInMemoryDatabase("TestingDB"));
+            }
+            else
+            {
+                services.AddDbContext<OnboardingContext>(options =>
+                   options.UseSqlServer(connection));
+            }
 
             services.AddAuthentication(
               options =>
@@ -124,8 +124,8 @@ namespace Onboarding
 
             //for docker 
 
-            //var context = app.ApplicationServices.GetService<OnboardingContext>();
-            //context.Database.Migrate();
+            var context = app.ApplicationServices.GetService<OnboardingContext>();
+            context.Database.Migrate();
             //app.UseCors("AllowSpecificOrigin");
             app.UseCors("AppPolicy");
             app.UseHttpsRedirection();
