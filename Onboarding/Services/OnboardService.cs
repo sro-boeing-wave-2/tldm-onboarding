@@ -260,7 +260,7 @@ namespace Onboarding.Services
             var workspace = await _context.Workspace.Include(i => i.UsersState).FirstOrDefaultAsync(x => x.WorkspaceName == value.Workspace);
             var user = workspace.UsersState.FirstOrDefault(x => x.EmailId == value.EmailId);
 
-            if (!user.IsJoined)
+            if (user == null || !user.IsJoined)
             {
                 var otp = SendMail(value);
                 var newuser = await _context.UserAccount.Include(i => i.Workspaces).FirstOrDefaultAsync(x => x.EmailId == value.EmailId);
