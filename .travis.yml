@@ -8,5 +8,6 @@ notifications:
 mono: none
 dotnet: 2.1
 script:
+ - git checkout -b dev_2
  - dotnet restore
  - dotnet test OnboardingTest/
