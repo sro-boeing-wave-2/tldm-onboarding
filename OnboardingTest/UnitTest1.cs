@@ -253,7 +253,7 @@ namespace OnboardingTest
 
             var controller = GetController();
             var result = await controller.OnboardUserFromWorkspace(Model);
-            var resultAsOkObjectResult = result as OkResult;
+            var resultAsOkObjectResult = result as OkObjectResult;
 
             Assert.Equal(200, resultAsOkObjectResult.StatusCode);
         }
@@ -263,8 +263,8 @@ namespace OnboardingTest
         {
             var Workspace = new Workspace()
             {
-                WorkspaceName = "sroboeing",
-                PictureUrl = "boeing.url",
+                WorkspaceName = "abcd",
+                //PictureUrl = "boeing.url",
             };
 
             var controller = GetController();
