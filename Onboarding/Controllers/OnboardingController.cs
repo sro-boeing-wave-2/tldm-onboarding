@@ -94,7 +94,11 @@ namespace Onboarding.Controllers
                 return BadRequest(ModelState);
             }
 
-            await _controller.CreateWorkspace(workspace);
+           var result =  await _controller.CreateWorkspace(workspace);
+            if (result == null)
+            {
+                return BadRequest();
+            }
             return Ok();
         }
 

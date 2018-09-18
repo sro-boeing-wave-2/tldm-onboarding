@@ -9,8 +9,8 @@ using Onboarding.Models;
 namespace Onboarding.Migrations
 {
     [DbContext(typeof(OnboardingContext))]
-    [Migration("20180906121220_stringId")]
-    partial class stringId
+    [Migration("20180918042449_new")]
+    partial class @new
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -19,6 +19,30 @@ namespace Onboarding.Migrations
                 .HasAnnotation("ProductVersion", "2.1.2-rtm-30932")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("Onboarding.Models.Bot", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("AppUrl");
+
+                    b.Property<string>("Developer");
+
+                    b.Property<string>("Info");
+
+                    b.Property<string>("LogoUrl");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("WorkspaceId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WorkspaceId");
+
+                    b.ToTable("Bot");
+                });
 
             modelBuilder.Entity("Onboarding.Models.Channel", b =>
                 {
@@ -117,6 +141,13 @@ namespace Onboarding.Migrations
                     b.HasIndex("UserAccountId");
 
                     b.ToTable("WorkspaceName");
+                });
+
+            modelBuilder.Entity("Onboarding.Models.Bot", b =>
+                {
+                    b.HasOne("Onboarding.Models.Workspace")
+                        .WithMany("Bots")
+                        .HasForeignKey("WorkspaceId");
                 });
 
             modelBuilder.Entity("Onboarding.Models.Channel", b =>

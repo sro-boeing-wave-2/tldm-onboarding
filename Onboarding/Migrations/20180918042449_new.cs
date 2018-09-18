@@ -2,7 +2,7 @@
 
 namespace Onboarding.Migrations
 {
-    public partial class stringId : Migration
+    public partial class @new : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -50,6 +50,29 @@ namespace Onboarding.Migrations
                         name: "FK_WorkspaceName_UserAccount_UserAccountId",
                         column: x => x.UserAccountId,
                         principalTable: "UserAccount",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Bot",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Info = table.Column<string>(nullable: true),
+                    Developer = table.Column<string>(nullable: true),
+                    AppUrl = table.Column<string>(nullable: true),
+                    LogoUrl = table.Column<string>(nullable: true),
+                    WorkspaceId = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bot", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Bot_Workspace_WorkspaceId",
+                        column: x => x.WorkspaceId,
+                        principalTable: "Workspace",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -119,6 +142,11 @@ namespace Onboarding.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Bot_WorkspaceId",
+                table: "Bot",
+                column: "WorkspaceId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Channel_WorkspaceId",
                 table: "Channel",
                 column: "WorkspaceId");
@@ -141,6 +169,9 @@ namespace Onboarding.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Bot");
+
             migrationBuilder.DropTable(
                 name: "Channel");
 

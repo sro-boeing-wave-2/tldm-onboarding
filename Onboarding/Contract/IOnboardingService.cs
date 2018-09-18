@@ -18,7 +18,7 @@ namespace Onboarding.Contract
 
         Task<Workspace> WorkSpaceDetails(Workspace workspace);
 
-        Task CreateWorkspace(Workspace workspace);
+        Task<Object> CreateWorkspace(Workspace workspace);
 
         Task<Object> Login(LoginViewModel login);
 

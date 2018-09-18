@@ -79,7 +79,7 @@ namespace Onboarding.Services
             return token;
         }
 
-        public async Task CreateWorkspace(Workspace workspace)
+        public async Task<Object> CreateWorkspace(Workspace workspace)
         {
             //var  unique =  _context.UserAccount.Include(i => i.Workspaces).Where(x => x.Workspaces.TrueForAll(y => y.WorkspaceName == workspace.WorkspaceName));
 
@@ -91,7 +91,9 @@ namespace Onboarding.Services
                 _context.Workspace.Add(workspace);
                 // UserAccount user =  new UserAccount { new List<Workspace>() { new Workspace { WorkspaceName = workspace.WorkspaceName } } };
                 _context.SaveChanges();
+                return workspace;
             }
+            return null;
         }
 
         public async Task<Object> OnboardUser(LoginViewModel value)
@@ -258,7 +260,7 @@ namespace Onboarding.Services
         {
             //var user = await _context.Workspace.Include(x => x.UsersState).FirstOrDefaultAsync(v => v.UsersState.Exists(o => o.EmailId == value.EmailId));
             var workspace = await _context.Workspace.Include(i => i.UsersState).FirstOrDefaultAsync(x => x.WorkspaceName == value.Workspace);
-            var user = workspace.UsersState.FirstOrDefault(x => x.EmailId == value.EmailId);
+             var user = workspace.UsersState.FirstOrDefault(x => x.EmailId == value.EmailId);
 
             if (user == null || !user.IsJoined)
             {
@@ -271,7 +273,7 @@ namespace Onboarding.Services
                     await _context.UserWorkspaces.AddAsync(new UserWorkspace { Workspace = workspace, UserAccount = details });
                     await _context.UserAccount.AddAsync(details);
                     _context.SaveChanges();
-                    return details;
+                   // return details;
                 }
                 UserState newUser = new UserState() { EmailId = value.EmailId, Otp = otp };
                 workspace.UsersState.Add(newUser);
