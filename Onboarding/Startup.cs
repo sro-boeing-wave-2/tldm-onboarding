@@ -8,17 +8,6 @@ using Onboarding.Models;
 using Onboarding.Contract;
 using Onboarding.Services;
 using Swashbuckle.AspNetCore.Swagger;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using System.IO;
-using Microsoft.AspNetCore.Http;
-using System.Security.Cryptography;
-using Org.BouncyCastle.OpenSsl;
-using Org.BouncyCastle.Crypto.Parameters;
-using System;
-using Org.BouncyCastle.Security;
-using Consul;
 
 namespace Onboarding
 {
@@ -110,33 +99,33 @@ namespace Onboarding
             //});
 
 
-            app.Use(async (context, next) =>
-            {
-                if (context.Request.Path == "/api/onboarding/login" || context.Request.Path == "/api/onboarding/create/workspace" || context.Request.Path == "/api/onboarding/create/workspace/email" || context.Request.Path == "/api/onboarding/workspacedetails" || context.Request.Path == "/api/onboarding/verify" || context.Request.Path == "/api/onboarding/invite/verify")
-                {
-                    await next();
-                }
-                Chilkat.Jwt jwt = new Chilkat.Jwt();
+            //app.Use(async (context, next) =>
+            //{
+            //    if (context.Request.Path == "/api/onboarding/login" || context.Request.Path == "/api/onboarding/create/workspace" || context.Request.Path == "/api/onboarding/create/workspace/email" || context.Request.Path == "/api/onboarding/workspacedetails" || context.Request.Path == "/api/onboarding/verify" || context.Request.Path == "/api/onboarding/invite/verify")
+            //    {
+            //        await next();
+            //    }
+            //    Chilkat.Jwt jwt = new Chilkat.Jwt();
 
-                using (var client = new ConsulClient())
-                {
+            //    using (var client = new ConsulClient())
+            //    {
 
-                    var getPair = await client.KV.Get("secretkey");
-                    string token = context.Request.Headers["Authorization"];
-                    if (token != null)
-                    {
-                        var x = token.Replace("Bearer ", "");
+            //        var getPair = await client.KV.Get("secretkey");
+            //        string token = context.Request.Headers["Authorization"];
+            //        if (token != null)
+            //        {
+            //            var x = token.Replace("Bearer ", "");
 
-                        Chilkat.Rsa rsaPublicKey = new Chilkat.Rsa();
-                        rsaPublicKey.ImportPublicKey(Encoding.UTF8.GetString(getPair.Response.Value));
-                        var isTokenVerified = jwt.VerifyJwtPk(x, rsaPublicKey.ExportPublicKeyObj());
-                        if (isTokenVerified)
-                        {
-                            await next();
-                        }
-                    }
-                }
-            });
+            //            Chilkat.Rsa rsaPublicKey = new Chilkat.Rsa();
+            //            rsaPublicKey.ImportPublicKey(Encoding.UTF8.GetString(getPair.Response.Value));
+            //            var isTokenVerified = jwt.VerifyJwtPk(x, rsaPublicKey.ExportPublicKeyObj());
+            //            if (isTokenVerified)
+            //            {
+            //                await next();
+            //            }
+            //        }
+            //    }
+            //});
 
             // app.UseAuthentication();
             app.UseSwagger();

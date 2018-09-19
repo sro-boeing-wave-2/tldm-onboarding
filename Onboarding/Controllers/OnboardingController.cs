@@ -104,7 +104,7 @@ namespace Onboarding.Controllers
             return Ok();
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPost("personaldetails")]
         public async Task<IActionResult> PersonalDetails([FromBody] UserAccount user)
         {
