@@ -11,10 +11,12 @@ namespace Onboarding.Controllers
     public class OnboardingController : ControllerBase
     {
         private readonly IOnboardingService _controller;
+        private readonly IJWTTokenService _tokengenerator;
 
-        public OnboardingController(IOnboardingService controller)
+        public OnboardingController(IOnboardingService controller, IJWTTokenService tokenService)
         {
             _controller = controller;
+            _tokengenerator = tokenService; 
         }
 
         [HttpPost("create/workspace/email")]
@@ -126,7 +128,8 @@ namespace Onboarding.Controllers
             var result = await _controller.Login(login);
             if (result != null)
             {
-                return Ok(result);
+               var token =  _tokengenerator.GetToken(result);
+               return  Ok(token);
             }
             return Unauthorized();
             //return Ok(result);
@@ -144,7 +147,7 @@ namespace Onboarding.Controllers
             return Ok(space1);
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet("{value}")]
         public async Task<IActionResult> GetAllWorkspace([FromRoute]string value)
         {

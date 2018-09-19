@@ -11,6 +11,14 @@ using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+using System.Security.Cryptography;
+using Org.BouncyCastle.OpenSsl;
+using Org.BouncyCastle.Crypto.Parameters;
+using System;
+using Org.BouncyCastle.Security;
+using Consul;
 
 namespace Onboarding
 {
@@ -40,7 +48,7 @@ namespace Onboarding
         {
             //for docker 
 
-           // var connection = @"Server=db;Database=OnboardingContext;User=sa;Password=YourStrongP@ssword;";
+           //var connection = @"Server=db;Database=OnboardingContext;User=sa;Password=YourStrongP@ssword;";
 
             services.AddSwaggerGen(c =>
             {
@@ -73,34 +81,13 @@ namespace Onboarding
             //       options.UseSqlServer(connection));
             //}
 
-            services.AddAuthentication(
-              options =>
-              {
-                  options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                  options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                  options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-              })
-              .AddJwtBearer(
-              options =>
-              {
-                  options.SaveToken = true;
-                  options.RefreshOnIssuerKeyNotFound = false;
-                  options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
-                  {
-                      ValidateIssuer = true,
-                      ValidateAudience = true,
-                      ValidAudience = "http://oec.com",
-                      ValidIssuer = "http://oec.com",
-                      IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySuperSecureKey"))
-                  };
-              }
-              );
+            
 
             services.AddDbContext<OnboardingContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("OnboardingContext")));
-
+            //services.AddS
             services.AddTransient<IOnboardingService , OnboardService>();
-           
+            services.AddSingleton<IJWTTokenService, JWTTokenService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -114,8 +101,44 @@ namespace Onboarding
             {
                 app.UseHsts();
             }
+            //app.Use(async (context,next) =>
+            //{
 
-            app.UseAuthentication();
+            //    await context.Request.
+
+            //    //return next();
+            //});
+
+
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Path == "/api/onboarding/login" || context.Request.Path == "/api/onboarding/create/workspace" || context.Request.Path == "/api/onboarding/create/workspace/email" || context.Request.Path == "/api/onboarding/workspacedetails" || context.Request.Path == "/api/onboarding/verify" || context.Request.Path == "/api/onboarding/invite/verify")
+                {
+                    await next();
+                }
+                Chilkat.Jwt jwt = new Chilkat.Jwt();
+
+                using (var client = new ConsulClient())
+                {
+
+                    var getPair = await client.KV.Get("secretkey");
+                    string token = context.Request.Headers["Authorization"];
+                    if (token != null)
+                    {
+                        var x = token.Replace("Bearer ", "");
+
+                        Chilkat.Rsa rsaPublicKey = new Chilkat.Rsa();
+                        rsaPublicKey.ImportPublicKey(Encoding.UTF8.GetString(getPair.Response.Value));
+                        var isTokenVerified = jwt.VerifyJwtPk(x, rsaPublicKey.ExportPublicKeyObj());
+                        if (isTokenVerified)
+                        {
+                            await next();
+                        }
+                    }
+                }
+            });
+
+            // app.UseAuthentication();
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
@@ -124,8 +147,8 @@ namespace Onboarding
 
             //for docker 
 
-           // var context = app.ApplicationServices.GetService<OnboardingContext>();
-           // context.Database.Migrate();
+            //var context = app.ApplicationServices.GetService<OnboardingContext>();
+            //context.Database.Migrate();
             //app.UseCors("AllowSpecificOrigin");
             app.UseCors("AppPolicy");
             app.UseHttpsRedirection();

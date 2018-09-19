@@ -1,4 +1,5 @@
-﻿using Onboarding.Models;
+﻿using Chilkat;
+using Onboarding.Models;
 using System;
 using System.Collections;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace Onboarding.Contract
 
         Task<Object> CreateWorkspace(Workspace workspace);
 
-        Task<Object> Login(LoginViewModel login);
+        Task<JsonObject> Login(LoginViewModel login);
 
         Task<IEnumerable> GetAllWorkspace(string emailId);
 

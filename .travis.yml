@@ -8,5 +8,8 @@ notifications:
 mono: none
 dotnet: 2.1
 script:
- - dotnet restore
+  - chmod +x ./deploy.sh
+  - dotnet restore
   - dotnet test keeptest/
+after_success:
+- /bin/bash ./deploy.sh
