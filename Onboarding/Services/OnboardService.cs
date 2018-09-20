@@ -54,6 +54,23 @@ namespace Onboarding.Services
                 };
 
             }
+            else if (value.Password == "Bot" && value.Workspace == "Bot")
+            {
+                JsonObject claims = new JsonObject();
+                claims.AppendString("Email", value.EmailId);
+                //claims.AppendString("UserID", user.Id);
+
+                JWTTokenService jwt = new JWTTokenService();
+
+                var JWToken = jwt.GetToken(claims);
+
+               // return claims;
+                message.Body = new TextPart("plain")
+                {
+                    Text =  " Your JWT Token is " + JWToken + " Welcome Aboard!"
+                };
+
+            }
             else
             {
                 message.Body = new TextPart("plain")
@@ -77,15 +94,11 @@ namespace Onboarding.Services
 
         public async Task<Object> CreateWorkspace(Workspace workspace)
         {
-            //var  unique =  _context.UserAccount.Include(i => i.Workspaces).Where(x => x.Workspaces.TrueForAll(y => y.WorkspaceName == workspace.WorkspaceName));
-
+            
             var unique = await _context.Workspace.FirstOrDefaultAsync(x => x.WorkspaceName == workspace.WorkspaceName);
-
-            // var unique = await _context.Workspace.FirstOrDefaultAsync(i => workspace.Workspaces.Any(y => y.WorkspaceName == i.WorkspaceName));
             if (unique == null)
             {
                 _context.Workspace.Add(workspace);
-                // UserAccount user =  new UserAccount { new List<Workspace>() { new Workspace { WorkspaceName = workspace.WorkspaceName } } };
                 _context.SaveChanges();
                 return workspace;
             }
@@ -97,14 +110,11 @@ namespace Onboarding.Services
 
             var workspace = await _context.Workspace.FirstOrDefaultAsync(x => x.WorkspaceName == value.Workspace);
 
-            // var user = await _context.UserAccount.FirstAsync(x => x.Workspaces.FirstOrDefault(u => u.WorkspaceName == value.EmailId))
-
             if (workspace != null)
             {
                 string token = SendMail(value);
 
                 UserState user = new UserState() { EmailId = value.EmailId, Otp = token };
-                //_context.Workspace.Where(x => x.WorkspaceName == value.Workspace).Include(x => x.UsersState);
                 workspace.UsersState.Add(user);
 
                 var newuser = await _context.UserAccount.Include(i => i.Workspaces).FirstOrDefaultAsync(x => x.EmailId == value.EmailId);
@@ -115,15 +125,7 @@ namespace Onboarding.Services
                     await _context.UserWorkspaces.AddAsync(new UserWorkspace { Workspace = workspace, UserAccount = details });
                     _context.SaveChanges();
                 }
-                //else
-                //{
-                //    newuser.Workspaces.AddRange(user.Workspaces);
-                //    _context.UserAccount.Update(newuser);
-                //    _context.SaveChanges();
-                //}
-
                 _context.Workspace.Update(workspace);
-                // _context.UserState.Add(user);
                 _context.SaveChanges();
                 return user;
             }
@@ -131,14 +133,8 @@ namespace Onboarding.Services
         }
 
         public async Task<JsonObject> VerifyUser(string token)
-        {
-            //var user = await _context.UserAccount.FirstOrDefaultAsync(x => x.Password == token);
-            //var space = await _context.Workspace.Include(i => i.UsersState).FirstOrDefaultAsync(x => x.WorkspaceName == token.Workspace);
+        {        
             var user = await _context.UserState.FirstOrDefaultAsync(x => x.Otp == token);
-            //var user = space.UsersState.FirstOrDefault(x => x.Otp == token.Password);
-            //user.IsVerified = true;
-            //user.IsJoined = true;
-            //_context.SaveChanges();
             if (user != null)
             {
                 JsonObject claims = new JsonObject();
@@ -153,14 +149,9 @@ namespace Onboarding.Services
 
 
         public async Task<JsonObject> VerifyInvitedUser(LoginViewModel token)
-        {
-            //var user = await _context.UserAccount.FirstOrDefaultAsync(x => x.Password == token);
-            var space = await _context.Workspace.Include(i => i.UsersState).FirstOrDefaultAsync(x => x.WorkspaceName == token.Workspace);
-            //var user = await _context.UserState.FirstOrDefaultAsync(x => x.Otp == token);
+        {            
+            var space = await _context.Workspace.Include(i => i.UsersState).FirstOrDefaultAsync(x => x.WorkspaceName == token.Workspace);            
             var user = space.UsersState.FirstOrDefault(x => x.Otp == token.Password);
-            //user.IsVerified = true;
-            //user.IsJoined = true;
-            //_context.SaveChanges();
             if (user != null)
             {
                 JsonObject claims = new JsonObject();
@@ -185,36 +176,24 @@ namespace Onboarding.Services
                 newuser.IsVerified = true;
 
                 var workspaceName = user.Workspaces.Select(i => i.Name).ToList();
-                // workspaceName.BinarySearch
-                //newuser.Workspaces.BinarySearch(workspaceName.)
                 var v = newuser.Workspaces.Exists(x => x.Name == workspaceName[0]);
                 if (!v)
                 {
                     newuser.Workspaces.AddRange(user.Workspaces);
-                    //newuser.Workspaces.ToHashSet();
                 }
 
                 _context.UserAccount.Update(newuser);
                 _context.SaveChanges();
             }
-            // else
-            //{
-            //newuser.Workspaces.AddRange(user.Workspaces);
-            //_context.UserAccount.Update(newuser);
-            //_context.SaveChanges();
-            //}
             return newuser;
         }
 
         public async Task<Workspace> WorkSpaceDetails(Workspace workspace)
         {
             var space = await _context.Workspace.FirstOrDefaultAsync(x => x.WorkspaceName == workspace.WorkspaceName);
-            // workspace.Id = space.Id;
             space.Channels.AddRange(workspace.Channels);
             space.Bots.AddRange(workspace.Bots);
             space.PictureUrl = workspace.PictureUrl;
-            // space.UsersState.AddRange(workspace.UsersState);
-
             _context.Workspace.Update(space);
             _context.SaveChanges();
             return space;
@@ -222,7 +201,6 @@ namespace Onboarding.Services
 
         public async Task<Object> OnboardUserFromWorkspace(LoginViewModel value)
         {
-            //var user = await _context.Workspace.Include(x => x.UsersState).FirstOrDefaultAsync(v => v.UsersState.Exists(o => o.EmailId == value.EmailId));
             var workspace = await _context.Workspace.Include(i => i.UsersState).FirstOrDefaultAsync(x => x.WorkspaceName == value.Workspace);
             var user = workspace.UsersState.FirstOrDefault(x => x.EmailId == value.EmailId);
 
@@ -237,7 +215,6 @@ namespace Onboarding.Services
                     await _context.UserWorkspaces.AddAsync(new UserWorkspace { Workspace = workspace, UserAccount = details });
                     await _context.UserAccount.AddAsync(details);
                     _context.SaveChanges();
-                    // return details;
                 }
                 UserState newUser = new UserState() { EmailId = value.EmailId, Otp = otp };
                 workspace.UsersState.Add(newUser);
@@ -246,28 +223,22 @@ namespace Onboarding.Services
                 return newUser;
 
             }
-
-            //else
-            //{
-            //    newuser.Workspaces.AddRange(user.Workspaces);
-            //    _context.UserAccount.Update(newuser);
-            //    _context.SaveChanges();
-            //}
-            //UserState newUser = new UserState() { EmailId = value.EmailId, Otp = otp };
-            //workspace.UsersState.Add(newUser);
-            //_context.Workspace.Update(workspace);
-            //_context.SaveChanges();
             return null;
 
         }
 
         public async Task<IEnumerable> GetAllWorkspace(string value)
         {
-            // var list = _context.UserAccount.Include(x => x.Workspaces).Where(c => c.Workspaces.Any(u => u.Name == u.Name));
             var user = await _context.UserAccount.Include(t => t.Workspaces).FirstOrDefaultAsync(x => x.EmailId == value);
-            var list = user.Workspaces.Select(v => v.Name);
+            if (user != null)
+            {
+                var list = user.Workspaces.Select(v => v.Name);
 
-            return list;
+                return list;
+            }
+
+            return null;
+            
         }
 
         public async Task<JsonObject> Login(LoginViewModel login)
@@ -279,63 +250,28 @@ namespace Onboarding.Services
 
             if (user != null)
             {
-                
-                // chilkat       
-                    // JsonObject jwtHeader = new JsonObject();
-                    // jwtHeader.AppendString("alg", "RS256");
-                    // jwtHeader.AppendString("typ", "JWT");
-
                     JsonObject claims = new JsonObject();
                     claims.AppendString("Email", user.EmailId);
                     claims.AppendString("UserID", user.Id);
 
                     return claims;
-
-                    //Object required = new object()
-                    //{
-                    //    Header = jwtHeader,
-
-                    //}
-
-                   // Jwt jwt = new Jwt();
-
-                 //   string token = jwt.CreateJwtPk(jwtHeader.Emit(), claims.Emit(), privateKey);
-
-                    //return token;
                 }
 
             return null;
         }
 
-        //public static string CreateToken(List<Claim> claims, string privateRsaKey)
-        //{
-        //    RSAParameters rsaParams;
-        //    using (var tr = new StringReader(privateRsaKey))
-        //    {
-        //        var pemReader = new PemReader(tr);
-        //        var keyPair = pemReader.ReadObject() as AsymmetricCipherKeyPair;
-        //        if (keyPair == null)
-        //        {
-        //            throw new Exception("Could not read RSA private key");
-        //        }
-        //        Console.WriteLine(keyPair.Private.ToString());
-        //        var privateRsaParams = keyPair.Private as RsaPrivateCrtKeyParameters;
-        //        rsaParams = DotNetUtilities.ToRSAParameters(privateRsaParams);
-        //    }
-        //    using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())
-        //    {
-        //        rsa.ImportParameters(rsaParams);
-        //        Dictionary<string, object> payload = claims.ToDictionary(k => k.Type, v => (object)v.Value);
-        //        return Jose.JWT.Encode(payload, rsa, Jose.JwsAlgorithm.RS256);
-        //    }
-        //}
-
+        
         public async Task<Workspace> GetWorkspaceByName(string name)
         {
             var space = await _context.Workspace.Include(x => x.UsersState).Include(y => y.Channels)
                 .Include(z => z.UserWorkspaces).FirstOrDefaultAsync(i => i.WorkspaceName == name);
-            //var user = await _context.UserAccount.FirstOrDefaultAsync(i => i.EmailId == name);
             return space;
+        }
+
+        public async Task<string> BotVerification(LoginViewModel value)
+        {
+            var token =  SendMail(value);
+            return token;
         }
 
     }

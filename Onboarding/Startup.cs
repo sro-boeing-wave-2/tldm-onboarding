@@ -8,21 +8,12 @@ using Onboarding.Models;
 using Onboarding.Contract;
 using Onboarding.Services;
 using Swashbuckle.AspNetCore.Swagger;
+using System;
 
 namespace Onboarding
 {
     public class Startup
     {
-        //public Startup(IConfiguration configuration)
-        //{
-        //    Configuration = configuration;
-        //}
-
-        //public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime.Use this method to add services to the container.
-
-        // Added for docker support
 
         public Startup(IConfiguration configuration, IHostingEnvironment environment)
         {
@@ -37,7 +28,7 @@ namespace Onboarding
         {
             //for docker 
 
-           var connection = @"Server=db;Database=OnboardingContext;User=sa;Password=YourStrongP@ssword;";
+           //var connection = @"Server=db;Database=OnboardingContext;User=sa;Password=YourStrongP@ssword;";
 
             services.AddSwaggerGen(c =>
             {
@@ -56,7 +47,6 @@ namespace Onboarding
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             //for docker 
-
             if (Environment.IsEnvironment("Testing"))
             {
                 services.AddDbContext<OnboardingContext>(options =>
@@ -67,14 +57,16 @@ namespace Onboarding
             else
             {
                 services.AddDbContext<OnboardingContext>(options =>
-                   options.UseSqlServer(connection));
+                   options.UseSqlServer(Configuration.GetConnectionString("OnboardingContext"),
+                    sqlServerOptionsAction: sqlOptions => {
+                        sqlOptions.EnableRetryOnFailure(
+                            maxRetryCount: 10,
+                            maxRetryDelay: TimeSpan.FromSeconds(30),
+                            errorNumbersToAdd: null
+                        );
+                    }));
             }
 
-
-
-            services.AddDbContext<OnboardingContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("OnboardingContext")));
-            //services.AddS
             services.AddTransient<IOnboardingService , OnboardService>();
             services.AddSingleton<IJWTTokenService, JWTTokenService>();
         }
@@ -118,8 +110,6 @@ namespace Onboarding
             //        }
             //    }
             //});
-
-            // app.UseAuthentication();
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
@@ -127,10 +117,8 @@ namespace Onboarding
             });
 
             //for docker 
-
             var context = app.ApplicationServices.GetService<OnboardingContext>();
             context.Database.Migrate();
-            //app.UseCors("AllowSpecificOrigin");
             app.UseCors("AppPolicy");
             app.UseHttpsRedirection();
             app.UseMvc();

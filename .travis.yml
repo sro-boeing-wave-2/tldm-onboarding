@@ -9,6 +9,6 @@ mono: none
 dotnet: 2.1
 script:
   - dotnet restore
-  - dotnet test Onboarding.test
+  - dotnet test OnboardingTest
 after_success:
   - /bin/bash ./deploy.sh

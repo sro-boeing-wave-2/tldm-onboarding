@@ -26,6 +26,9 @@ namespace Onboarding.Contract
         Task<IEnumerable> GetAllWorkspace(string emailId);
 
         Task<Workspace> GetWorkspaceByName(string name);
+
         Task<JsonObject> VerifyInvitedUser(LoginViewModel otp);
+
+        Task<string> BotVerification(LoginViewModel value);
     }
 }

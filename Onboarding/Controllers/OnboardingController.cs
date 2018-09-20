@@ -191,5 +191,21 @@ namespace Onboarding.Controllers
 
         }
 
+        [HttpPost]
+        public IActionResult BotVerfication(LoginViewModel value)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = _controller.BotVerification(value);
+            if(result != null)
+            {
+                return Ok();
+            }
+            return BadRequest();
+
+        }
     }
 }
