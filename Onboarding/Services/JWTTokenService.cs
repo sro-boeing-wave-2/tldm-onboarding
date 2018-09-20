@@ -41,11 +41,11 @@ namespace Onboarding.Services
         {
             // Use the private key to generate token
             JsonObject jwtHeader = new JsonObject();
-                    jwtHeader.AppendString("alg", "RS256");
-                    jwtHeader.AppendString("typ", "JWT");
+            jwtHeader.AppendString("alg", "RS256");
+            jwtHeader.AppendString("typ", "JWT");
             //var header = payload
             Jwt jwt = new Jwt();
-            string token = jwt.CreateJwtPk(jwtHeader.Emit(),payload.Emit(),PrivateKey);
+            string token = jwt.CreateJwtPk(jwtHeader.Emit(), payload.Emit(), PrivateKey);
 
             return token;
         }

@@ -13,7 +13,7 @@ namespace Onboarding.Contract
 
         Task<Object> OnboardUserFromWorkspace(LoginViewModel user);
 
-        Task<Object> VerifyUser(String otp);
+        Task<JsonObject> VerifyUser(String otp);
 
         Task<UserAccount> PersonalDetails(UserAccount user);
 
@@ -26,6 +26,6 @@ namespace Onboarding.Contract
         Task<IEnumerable> GetAllWorkspace(string emailId);
 
         Task<Workspace> GetWorkspaceByName(string name);
-        Task<Object> VerifyInvitedUser(LoginViewModel otp);
+        Task<JsonObject> VerifyInvitedUser(LoginViewModel otp);
     }
 }

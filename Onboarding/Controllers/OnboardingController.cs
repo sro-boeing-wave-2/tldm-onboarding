@@ -47,7 +47,13 @@ namespace Onboarding.Controllers
             var result = await _controller.VerifyUser(otp);
             if (result != null)
             {
-                return Ok(result);
+                //return Ok(result);
+                var token = _tokengenerator.GetToken(result);
+                var tokenObject = new
+                {
+                    token = token
+                };
+                return Ok(tokenObject);
             }
             return Unauthorized();
         }
@@ -82,7 +88,13 @@ namespace Onboarding.Controllers
             var result = await _controller.VerifyInvitedUser(otp);
             if (result != null)
             {
-                return Ok(result);
+                // return Ok(result);
+                var token = _tokengenerator.GetToken(result);
+                var tokenObject = new
+                {
+                    token = token
+                };
+                return Ok(tokenObject);
             }
             return Unauthorized();
         }
@@ -129,7 +141,12 @@ namespace Onboarding.Controllers
             if (result != null)
             {
                var token =  _tokengenerator.GetToken(result);
-               return  Ok(token);
+                var tokenObject = new
+                {
+                    token = token
+                };
+                return Ok(tokenObject);
+                //return  Ok(token);
             }
             return Unauthorized();
             //return Ok(result);

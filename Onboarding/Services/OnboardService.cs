@@ -1,23 +1,11 @@
 ﻿using Chilkat;
-using Consul;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using MimeKit;
 using Onboarding.Contract;
 using Onboarding.Models;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.OpenSsl;
-using Org.BouncyCastle.Security;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.IO;
 using System.Linq;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Onboarding.Services
@@ -142,7 +130,7 @@ namespace Onboarding.Services
             return null;
         }
 
-        public async Task<Object> VerifyUser(string token)
+        public async Task<JsonObject> VerifyUser(string token)
         {
             //var user = await _context.UserAccount.FirstOrDefaultAsync(x => x.Password == token);
             //var space = await _context.Workspace.Include(i => i.UsersState).FirstOrDefaultAsync(x => x.WorkspaceName == token.Workspace);
@@ -153,34 +141,18 @@ namespace Onboarding.Services
             //_context.SaveChanges();
             if (user != null)
             {
-                var claims = new[]
-                   {
-                       new Claim(JwtRegisteredClaimNames.Email,user.EmailId),
-                   };
-                var privateKey = File.ReadAllText(@"E:\workspace\Project\onboard-backend-b8d13474c651ab70c525d5bd4fef72308551a2b4/jwtRS256.key");
-                var signinKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(privateKey));
-                var Jwtoken = new JwtSecurityToken(
-                    issuer: "http://oec.com",
-                    audience: "http://oec.com",
-                    expires: DateTime.UtcNow.AddHours(1),
-                    claims: claims,
-                    signingCredentials: new Microsoft.IdentityModel.Tokens.SigningCredentials(signinKey, SecurityAlgorithms.HmacSha256));
+                JsonObject claims = new JsonObject();
+                claims.AppendString("Email", user.EmailId);
+                claims.AppendString("UserID", user.Id);
 
-                user.IsJoined = true;
-                _context.SaveChanges();
-
-                return new
-                {
-                    token = new JwtSecurityTokenHandler().WriteToken(Jwtoken),
-                    expiration = Jwtoken.ValidTo
-                };
+                return claims;
             }
 
-            return user;
+            return null;
         }
 
 
-        public async Task<Object> VerifyInvitedUser(LoginViewModel token)
+        public async Task<JsonObject> VerifyInvitedUser(LoginViewModel token)
         {
             //var user = await _context.UserAccount.FirstOrDefaultAsync(x => x.Password == token);
             var space = await _context.Workspace.Include(i => i.UsersState).FirstOrDefaultAsync(x => x.WorkspaceName == token.Workspace);
@@ -191,30 +163,14 @@ namespace Onboarding.Services
             //_context.SaveChanges();
             if (user != null)
             {
-                var claims = new[]
-                   {
-                       new Claim(JwtRegisteredClaimNames.Email,user.EmailId),
-                   };
+                JsonObject claims = new JsonObject();
+                claims.AppendString("Email", user.EmailId);
+                claims.AppendString("UserID", user.Id);
 
-                var signinKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySuperSecureKey"));
-                var Jwtoken = new JwtSecurityToken(
-                    issuer: "http://oec.com",
-                    audience: "http://oec.com",
-                    expires: DateTime.UtcNow.AddHours(1),
-                    claims: claims,
-                    signingCredentials: new Microsoft.IdentityModel.Tokens.SigningCredentials(signinKey, SecurityAlgorithms.HmacSha256));
-
-                user.IsJoined = true;
-                _context.SaveChanges();
-
-                return new
-                {
-                    token = new JwtSecurityTokenHandler().WriteToken(Jwtoken),
-                    expiration = Jwtoken.ValidTo
-                };
+                return claims;
             }
 
-            return user;
+            return null;
         }
 
         public async Task<UserAccount> PersonalDetails(UserAccount user)
