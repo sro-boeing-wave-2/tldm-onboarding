@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -9,12 +10,12 @@ using Onboarding.Contract;
 using Onboarding.Services;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
+using Microsoft.SqlServer.Server;
 
 namespace Onboarding
 {
     public class Startup
     {
-
         public Startup(IConfiguration configuration, IHostingEnvironment environment)
         {
             Configuration = configuration;
@@ -34,8 +35,6 @@ namespace Onboarding
             {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
             });
-
-            
 
             services.AddCors(o => o.AddPolicy("AppPolicy", builder =>
             builder.AllowAnyHeader()
@@ -66,7 +65,6 @@ namespace Onboarding
                         );
                     }));
             }
-
             services.AddTransient<IOnboardingService , OnboardService>();
             services.AddSingleton<IJWTTokenService, JWTTokenService>();
         }
@@ -78,11 +76,6 @@ namespace Onboarding
             { 
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseHsts();
-            }
-
             //app.Use(async (context, next) =>
             //{
             //    if (context.Request.Path == "/api/onboarding/login" || context.Request.Path == "/api/onboarding/create/workspace" || context.Request.Path == "/api/onboarding/create/workspace/email" || context.Request.Path == "/api/onboarding/workspacedetails" || context.Request.Path == "/api/onboarding/verify" || context.Request.Path == "/api/onboarding/invite/verify")
