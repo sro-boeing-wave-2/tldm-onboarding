@@ -110,8 +110,9 @@ namespace Onboarding
             });
 
             //for docker 
-            var context = app.ApplicationServices.GetService<OnboardingContext>();
-            context.Database.Migrate();
+            //var context = app.ApplicationServices.GetService<OnboardingContext>();
+            //context.Database.Migrate();
+
             app.UseCors("AppPolicy");
             app.UseHttpsRedirection();
             app.UseMvc();

@@ -1,20 +1,17 @@
-FROM microsoft/dotnet:2.1-aspnetcore-runtime AS base
+FROM microsoft/dotnet:2.1-sdk AS build-env
 WORKDIR /app
-EXPOSE 51453
-EXPOSE 44360
 
-FROM microsoft/dotnet:2.1-sdk AS build
-WORKDIR /Onboarding
+# Copy csproj and restore as distinct layers
 COPY *.csproj ./
-RUN dotnet restore 
-COPY . .
-WORKDIR /Onboarding
-RUN dotnet build Onboarding.csproj -c Release -o /app
+RUN dotnet restore
 
-FROM build AS publish
-RUN dotnet publish Onboarding.csproj -c Release -o /app
+# Copy everything else and build
+COPY . ./
+RUN dotnet publish -c Release -o out
 
-FROM base AS final
+# Build runtime image
+FROM microsoft/dotnet:aspnetcore-runtime
 WORKDIR /app
-COPY --from=publish /app .
+EXPOSE 80
+COPY --from=build-env /app/out .
 ENTRYPOINT ["dotnet", "Onboarding.dll"]

@@ -15,7 +15,6 @@ namespace Onboarding.Services
             Chilkat.Rsa rsaKey = new Chilkat.Rsa();
             rsaKey.GenerateKey(1024);
             PrivateKey = rsaKey.ExportPrivateKeyObj();
-            //this.AddPublicKeyToConsul("dsfds");
             var istrue = AddPublicKeyToConsul(rsaKey.ExportPublicKey());
         }
 
@@ -43,10 +42,8 @@ namespace Onboarding.Services
             JsonObject jwtHeader = new JsonObject();
             jwtHeader.AppendString("alg", "RS256");
             jwtHeader.AppendString("typ", "JWT");
-            //var header = payload
             Jwt jwt = new Jwt();
             string token = jwt.CreateJwtPk(jwtHeader.Emit(), payload.Emit(), PrivateKey);
-
             return token;
         }
 

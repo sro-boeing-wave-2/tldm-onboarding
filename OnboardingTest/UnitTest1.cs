@@ -34,7 +34,7 @@ namespace OnboardingTest
             //_token = new OnboardingContext(optionBuilder.Options);
             CreateData(optionBuilder.Options);
             Context = new OnboardService(_Context);
-            //token = new JWTTokenService(_token);
+            Token = new JWTTokenService();
             return new OnboardingController(Context,Token);
         }
 
@@ -186,29 +186,29 @@ namespace OnboardingTest
 
         }
 
-        //[Fact]
-        //public async Task LoginTest()
-        //{
-        //    var Model = new LoginViewModel()
-        //    {
-        //        EmailId = "ssk@gmail.com",
-        //        Password = "ssk123",
-        //        Workspace = "sroboeing"
-        //    };
+        [Fact]
+        public async Task LoginTest()
+        {
+            var Model = new LoginViewModel()
+            {
+                EmailId = "ssk@gmail.com",
+                Password = "ssk123",
+                Workspace = "sroboeing"
+            };
 
-        //    var controller = GetController();
+            var controller = GetController();
 
-        //    var result = await controller.Login(Model);
-        //    var resultAsOkObjectResult = result as OkObjectResult;
-        //    var response = (resultAsOkObjectResult.Value as object);
-        //    Assert.Equal(200, resultAsOkObjectResult.StatusCode);
+            var result = await controller.Login(Model);
+            var resultAsOkObjectResult = result as OkObjectResult;
+            var response = (resultAsOkObjectResult.Value as object);
+            Assert.Equal(200, resultAsOkObjectResult.StatusCode);
         //   // var jwtstring = JObject.Parse(JsonConvert.SerializeObject(response));
         //   // var token = new JwtSecurityToken(jwtEncodedString: jwtstring["token"].ToString());
         //    // Console.WriteLine("email => " + token.Claims.First(c => c.Type == "email").Value);
         //    //Console.WriteLine(jwtstring["token"]);
 
-        //    //Model.EmailId.Equals(token.Claims.First(c => c.Type == "email").Value);
-        //}
+            //    //Model.EmailId.Equals(token.Claims.First(c => c.Type == "email").Value);
+        }
 
 
         [Fact]
@@ -279,17 +279,17 @@ namespace OnboardingTest
 
         }
 
-        //[Fact]
-        //public async Task VerifyTest()
-        //{
-        //    string Otp = "xyz1234";
+        [Fact]
+        public async Task VerifyTest()
+        {
+            string Otp = "xyz1234";
 
-        //    var controller = GetController();
-        //    var result = await controller.Verify(Otp);
-        //    var resultAsOkObjectResult = result as UnauthorizedResult;
+            var controller = GetController();
+            var result = await controller.Verify(Otp);
+            var resultAsOkObjectResult = result as UnauthorizedResult;
 
-        //    Assert.Equal(401, resultAsOkObjectResult.StatusCode);
-        //}
+            Assert.Equal(401, resultAsOkObjectResult.StatusCode);
+        }
 
     }
 }

@@ -28,10 +28,6 @@ namespace Onboarding.Controllers
                 return BadRequest(ModelState);
             }
             var result = await _controller.OnboardUser(user);
-            //if (result != null)
-            //{
-            //    return Ok(result);
-            //}
             return Ok(result);
         }
 
@@ -47,7 +43,6 @@ namespace Onboarding.Controllers
             var result = await _controller.VerifyUser(otp);
             if (result != null)
             {
-                //return Ok(result);
                 var token = _tokengenerator.GetToken(result);
                 var tokenObject = new
                 {
@@ -88,7 +83,6 @@ namespace Onboarding.Controllers
             var result = await _controller.VerifyInvitedUser(otp);
             if (result != null)
             {
-                // return Ok(result);
                 var token = _tokengenerator.GetToken(result);
                 var tokenObject = new
                 {
@@ -146,10 +140,8 @@ namespace Onboarding.Controllers
                     token = token
                 };
                 return Ok(tokenObject);
-                //return  Ok(token);
             }
             return Unauthorized();
-            //return Ok(result);
         }
 
         [HttpPut("workspacedetails")]
@@ -191,7 +183,7 @@ namespace Onboarding.Controllers
 
         }
 
-        [HttpPost]
+        [HttpPost("bot/verify")]
         public IActionResult BotVerfication(LoginViewModel value)
         {
             if (!ModelState.IsValid)
