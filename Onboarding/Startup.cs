@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -8,22 +9,12 @@ using Onboarding.Models;
 using Onboarding.Contract;
 using Onboarding.Services;
 using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.SqlServer.Server;
 
 namespace Onboarding
 {
     public class Startup
     {
-        //public Startup(IConfiguration configuration)
-        //{
-        //    Configuration = configuration;
-        //}
-
-        //public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime.Use this method to add services to the container.
-
-        // Added for docker support
-
         public Startup(IConfiguration configuration, IHostingEnvironment environment)
         {
             Configuration = configuration;
@@ -37,14 +28,12 @@ namespace Onboarding
         {
             //for docker 
 
-           var connection = @"Server=db;Database=OnboardingContext;User=sa;Password=YourStrongP@ssword;";
+            // var connection = @"Server=db;Database=OnboardingContext;User=sa;Password=YourStrongP@ssword;";
 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
             });
-
-            
 
             services.AddCors(o => o.AddPolicy("AppPolicy", builder =>
             builder.AllowAnyHeader()
@@ -67,14 +56,15 @@ namespace Onboarding
             else
             {
                 services.AddDbContext<OnboardingContext>(options =>
-                   options.UseSqlServer(connection));
+                   options.UseSqlServer(Configuration.GetConnectionString("OnboardingContext"), 
+                    sqlServerOptionsAction: sqlOptions => {
+                        sqlOptions.EnableRetryOnFailure(
+                            maxRetryCount: 10,
+                            maxRetryDelay: TimeSpan.FromSeconds(30),
+                            errorNumbersToAdd: null
+                        );
+                    }));
             }
-
-
-
-            services.AddDbContext<OnboardingContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("OnboardingContext")));
-            //services.AddS
             services.AddTransient<IOnboardingService , OnboardService>();
             services.AddSingleton<IJWTTokenService, JWTTokenService>();
         }
@@ -86,11 +76,6 @@ namespace Onboarding
             { 
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseHsts();
-            }
-
             //app.Use(async (context, next) =>
             //{
             //    if (context.Request.Path == "/api/onboarding/login" || context.Request.Path == "/api/onboarding/create/workspace" || context.Request.Path == "/api/onboarding/create/workspace/email" || context.Request.Path == "/api/onboarding/workspacedetails" || context.Request.Path == "/api/onboarding/verify" || context.Request.Path == "/api/onboarding/invite/verify")
