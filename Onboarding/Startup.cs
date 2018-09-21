@@ -76,33 +76,6 @@ namespace Onboarding
             { 
                 app.UseDeveloperExceptionPage();
             }
-            //app.Use(async (context, next) =>
-            //{
-            //    if (context.Request.Path == "/api/onboarding/login" || context.Request.Path == "/api/onboarding/create/workspace" || context.Request.Path == "/api/onboarding/create/workspace/email" || context.Request.Path == "/api/onboarding/workspacedetails" || context.Request.Path == "/api/onboarding/verify" || context.Request.Path == "/api/onboarding/invite/verify")
-            //    {
-            //        await next();
-            //    }
-            //    Chilkat.Jwt jwt = new Chilkat.Jwt();
-
-            //    using (var client = new ConsulClient())
-            //    {
-
-            //        var getPair = await client.KV.Get("secretkey");
-            //        string token = context.Request.Headers["Authorization"];
-            //        if (token != null)
-            //        {
-            //            var x = token.Replace("Bearer ", "");
-
-            //            Chilkat.Rsa rsaPublicKey = new Chilkat.Rsa();
-            //            rsaPublicKey.ImportPublicKey(Encoding.UTF8.GetString(getPair.Response.Value));
-            //            var isTokenVerified = jwt.VerifyJwtPk(x, rsaPublicKey.ExportPublicKeyObj());
-            //            if (isTokenVerified)
-            //            {
-            //                await next();
-            //            }
-            //        }
-            //    }
-            //});
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
@@ -110,8 +83,8 @@ namespace Onboarding
             });
 
             //for docker 
-            //var context = app.ApplicationServices.GetService<OnboardingContext>();
-            //context.Database.Migrate();
+            var context = app.ApplicationServices.GetService<OnboardingContext>();
+            context.Database.Migrate();
 
             app.UseCors("AppPolicy");
             app.UseHttpsRedirection();
