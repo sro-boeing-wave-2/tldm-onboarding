@@ -3,6 +3,7 @@ using Chilkat;
 using Consul;
 using System.Text;
 using System.Threading.Tasks;
+using System;
 
 namespace Onboarding.Services
 {
@@ -15,22 +16,37 @@ namespace Onboarding.Services
             Chilkat.Rsa rsaKey = new Chilkat.Rsa();
             rsaKey.GenerateKey(1024);
             PrivateKey = rsaKey.ExportPrivateKeyObj();
-            var istrue = AddPublicKeyToConsul(rsaKey.ExportPublicKey());
+
+            AddPublicKeyToConsul(rsaKey.ExportPublicKey()).Wait();
+ 
+            Console.WriteLine("\n" + "hello boss" + "\n");
         }
 
-        private async Task<bool> AddPublicKeyToConsul(string publicKey)
+        public static async Task<bool> AddPublicKeyToConsul(string publicKey)
         {
+            Console.WriteLine("\n" + "hello boss1" + "\n");
+
+            //var clientConfig = new ConsulClientConfiguration
+            //{
+            //    Address = new Uri("http://10.0.75.1:8500")
+            //};
             using (var client = new ConsulClient())
             {
+                Console.WriteLine("\n" + "hello boss2" + "\n");
+                client.Config.Address = new Uri("http://10.0.75.1:8500");
                 var putPair = new KVPair("secretkey")
                 {
+
                     Value = Encoding.UTF8.GetBytes(publicKey)
                 };
+                Console.WriteLine("\n" + "hello boss3" + "\n");
                 var putAttempt = await client.KV.Put(putPair);
-
+                Console.WriteLine("\n" +"hi" + putAttempt.Response + "\n");
                 if (putAttempt.Response)
                 {
+                    Console.WriteLine("\n" + "hello boss4 " + "\n");
                     return true;
+                    
                 }
             }
             return false;

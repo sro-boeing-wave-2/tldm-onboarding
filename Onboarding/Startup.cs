@@ -83,7 +83,7 @@ namespace Onboarding
             });
 
             //for docker 
-            var context = app.ApplicationServices.GetService<OnboardingContext>();
+             var context = app.ApplicationServices.GetService<OnboardingContext>();
             context.Database.Migrate();
 
             app.UseCors("AppPolicy");
