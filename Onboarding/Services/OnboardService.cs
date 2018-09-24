@@ -243,20 +243,27 @@ namespace Onboarding.Services
 
         public async Task<JsonObject> Login(LoginViewModel login)
         {
-            var user = await _context.UserAccount.Where(existUser =>
-           existUser.EmailId == login.EmailId
-           && existUser.Password == login.Password)
-           .FirstOrDefaultAsync();
-
-            if (user != null)
+            try
             {
+                var user = await _context.UserAccount.Where(existUser =>
+               existUser.EmailId == login.EmailId
+               && existUser.Password == login.Password)
+               .FirstOrDefaultAsync();
+
+
+                if (user != null)
+                {
                     JsonObject claims = new JsonObject();
                     claims.AppendString("Email", user.EmailId);
                     claims.AppendString("UserID", user.Id);
 
                     return claims;
                 }
-
+            }
+            catch (Exception E)
+            {
+                Console.Write(E.Message);
+            }
             return null;
         }
 
