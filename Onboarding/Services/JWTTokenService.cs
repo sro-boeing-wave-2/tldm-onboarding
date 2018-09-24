@@ -4,13 +4,19 @@ using Consul;
 using System.Text;
 using System.Threading.Tasks;
 using System;
+using Microsoft.Extensions.Configuration;
 
 namespace Onboarding.Services
 {
     public class JWTTokenService : IJWTTokenService
     {
+        // public IConfiguration Configuration { get; }
+        //[System.Runtime.InteropServices.ComVisible(true)]
+        //public static class Environment { };
         public JWTTokenService()
         {
+            //Console.WriteLine("YOYO "+ Environment.)
+           //s Configuration = configuration;
             Chilkat.Global global = new Chilkat.Global();
             global.UnlockBundle("Anything for 30-day trail");
             Chilkat.Rsa rsaKey = new Chilkat.Rsa();
@@ -54,6 +60,10 @@ namespace Onboarding.Services
         }
         public string GetToken(JsonObject payload)
         {
+            var variable = "hello";
+            Console.WriteLine(Environment.GetEnvironmentVariable(variable));
+
+
             // Use the private key to generate token
             JsonObject jwtHeader = new JsonObject();
             jwtHeader.AppendString("alg", "RS256");

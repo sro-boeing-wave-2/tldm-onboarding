@@ -153,7 +153,11 @@ namespace Onboarding.Controllers
             }
 
             var space1 = await _controller.WorkSpaceDetails(space);
-            return Ok(space1);
+            if (space1 != null)
+            {
+                return Ok(space1);
+            }
+            return NotFound();
         }
 
         //[Authorize]

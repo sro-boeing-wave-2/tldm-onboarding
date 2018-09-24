@@ -191,12 +191,16 @@ namespace Onboarding.Services
         public async Task<Workspace> WorkSpaceDetails(Workspace workspace)
         {
             var space = await _context.Workspace.FirstOrDefaultAsync(x => x.WorkspaceName == workspace.WorkspaceName);
-            space.Channels.AddRange(workspace.Channels);
-            space.Bots.AddRange(workspace.Bots);
-            space.PictureUrl = workspace.PictureUrl;
-            _context.Workspace.Update(space);
-            _context.SaveChanges();
-            return space;
+            if (space != null)
+            {
+                space.Channels.AddRange(workspace.Channels);
+                space.Bots.AddRange(workspace.Bots);
+                space.PictureUrl = workspace.PictureUrl;
+                _context.Workspace.Update(space);
+                _context.SaveChanges();
+                return space;
+            }
+            return null;
         }
 
         public async Task<Object> OnboardUserFromWorkspace(LoginViewModel value)
@@ -229,6 +233,8 @@ namespace Onboarding.Services
 
         public async Task<IEnumerable> GetAllWorkspace(string value)
         {
+            var variable = "hello";
+            Console.WriteLine(Environment.GetEnvironmentVariable(variable));
             var user = await _context.UserAccount.Include(t => t.Workspaces).FirstOrDefaultAsync(x => x.EmailId == value);
             if (user != null)
             {
@@ -243,6 +249,10 @@ namespace Onboarding.Services
 
         public async Task<JsonObject> Login(LoginViewModel login)
         {
+            var variable = "hello";
+            var value = "Raahil";
+            Environment.SetEnvironmentVariable(variable, value);
+
             try
             {
                 var user = await _context.UserAccount.Where(existUser =>
