@@ -107,7 +107,7 @@ namespace Onboarding.Controllers
             {
                 return BadRequest();
             }
-            return Ok();
+            return Ok(result);
         }
 
         //[Authorize]

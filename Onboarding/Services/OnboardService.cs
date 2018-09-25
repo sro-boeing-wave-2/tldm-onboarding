@@ -249,9 +249,9 @@ namespace Onboarding.Services
 
         public async Task<JsonObject> Login(LoginViewModel login)
         {
-            var variable = "hello";
-            var value = "Raahil";
-            Environment.SetEnvironmentVariable(variable, value);
+            //var variable = "hello";
+            //var value = "Raahil";
+            //Environment.SetEnvironmentVariable(variable, value);
 
             try
             {
