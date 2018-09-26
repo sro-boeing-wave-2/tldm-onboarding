@@ -16,6 +16,8 @@ namespace Onboarding
     {
         public static void Main(string[] args)
         {
+            DotNetEnv.Env.Load("./machine_config/.env");
+            Environment.GetEnvironmentVariable("MACHINE_LOCAL_IPV4");
                 CreateWebHostBuilder(args).Build().Run();
             
         }

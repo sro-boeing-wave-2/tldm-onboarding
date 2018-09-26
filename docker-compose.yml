@@ -7,6 +7,8 @@ services:
         - "5000:80"
     depends_on:
         - db
+    volumes:
+      - "~/machine_config:/app/machine_config"
     labels:
      - "SERVICE_8080_NAME=onboarding-service"
      - "SERVICE_TAG=rtm-serviceTag"

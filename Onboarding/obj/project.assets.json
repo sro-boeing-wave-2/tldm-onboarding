@@ -58,6 +58,18 @@
           "lib/netstandard1.3/Consul.dll": {}
         }
       },
+      "DotNetEnv/1.2.0": {
+        "type": "package",
+        "dependencies": {
+          "NETStandard.Library": "1.6.1"
+        },
+        "compile": {
+          "lib/netstandard1.3/DotNetEnv.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.3/DotNetEnv.dll": {}
+        }
+      },
       "jose-jwt/2.4.0": {
         "type": "package",
         "dependencies": {
@@ -5096,6 +5108,16 @@
         "consul.nuspec",
         "lib/net45/Consul.dll",
         "lib/netstandard1.3/Consul.dll"
+      ]
+    },
+    "DotNetEnv/1.2.0": {
+      "sha512": "TT7pY8szkPDptJPDt/Uct/rgrkpfx2TdzFprDjU1Il3h6lRhG1xI3spw58CbtcFF68XTSGlaoydMRiFi92GLyw==",
+      "type": "package",
+      "path": "dotnetenv/1.2.0",
+      "files": [
+        "dotnetenv.1.2.0.nupkg.sha512",
+        "dotnetenv.nuspec",
+        "lib/netstandard1.3/DotNetEnv.dll"
       ]
     },
     "jose-jwt/2.4.0": {
@@ -13205,6 +13227,7 @@
     ".NETCoreApp,Version=v2.1": [
       "ChilkatDnCore >= 9.5.0.75",
       "Consul >= 0.7.2.6",
+      "DotNetEnv >= 1.2.0",
       "MailKit >= 2.0.6",
       "Microsoft.AspNetCore.App >= 2.1.1",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 2.1.2",
@@ -13264,6 +13287,10 @@
           "Consul": {
             "target": "Package",
             "version": "[0.7.2.6, )"
+          },
+          "DotNetEnv": {
+            "target": "Package",
+            "version": "[1.2.0, )"
           },
           "MailKit": {
             "target": "Package",

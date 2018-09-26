@@ -66,7 +66,6 @@ E:\workspace\Project\tldm-onboarding-dev1\tldm-onboarding-dev1\Onboarding\bin\De
 E:\workspace\Project\tldm-onboarding-dev1\tldm-onboarding-dev1\Onboarding\obj\Debug\netcoreapp2.1\Onboarding.csproj.CoreCompileInputs.cache
 E:\workspace\Project\tldm-onboarding-dev1\tldm-onboarding-dev1\Onboarding\obj\Debug\netcoreapp2.1\Onboarding.RazorAssemblyInfo.cache
 E:\workspace\Project\tldm-onboarding-dev1\tldm-onboarding-dev1\Onboarding\obj\Debug\netcoreapp2.1\Onboarding.RazorAssemblyInfo.cs
-E:\workspace\Project\tldm-onboarding-dev1\tldm-onboarding-dev1\Onboarding\obj\Debug\netcoreapp2.1\UserSecretsAssemblyInfo.cs
 E:\workspace\Project\tldm-onboarding-dev1\tldm-onboarding-dev1\Onboarding\obj\Debug\netcoreapp2.1\Onboarding.AssemblyInfoInputs.cache
 E:\workspace\Project\tldm-onboarding-dev1\tldm-onboarding-dev1\Onboarding\obj\Debug\netcoreapp2.1\Onboarding.AssemblyInfo.cs
 E:\workspace\Project\tldm-onboarding-dev1\tldm-onboarding-dev1\Onboarding\obj\Debug\netcoreapp2.1\Onboarding.RazorTargetAssemblyInfo.cache

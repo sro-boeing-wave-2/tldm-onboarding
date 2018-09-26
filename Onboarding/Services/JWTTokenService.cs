@@ -34,20 +34,20 @@ namespace Onboarding.Services
         {
             Console.WriteLine("\n" + "hello boss1" + "\n");
 
-            string html = string.Empty;
-            string url = @"http://169.254.169.254/latest/meta-data/local-ipv4";
+            //string html = string.Empty;
+            //string url = @"http://169.254.169.254/latest/meta-data/local-ipv4";
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.AutomaticDecompression = DecompressionMethods.GZip;
+            //HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            //request.AutomaticDecompression = DecompressionMethods.GZip;
 
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            using (System.IO.Stream stream = response.GetResponseStream())
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                html = reader.ReadToEnd();
-            }
+            //using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+            //using (System.IO.Stream stream = response.GetResponseStream())
+            //using (StreamReader reader = new StreamReader(stream))
+            //{
+            //    html = reader.ReadToEnd();
+            //}
 
-            Console.WriteLine(html);
+            //Console.WriteLine(html);
 
             //var clientConfig = new ConsulClientConfiguration
             //{
@@ -56,9 +56,10 @@ namespace Onboarding.Services
             using (var client = new ConsulClient())
             {
                 Console.WriteLine("\n" + "hello boss2" + "\n");
-               //client.Config.Address = new Uri("http://10.0.75.1:8500");
+                //client.Config.Address = new Uri("http://10.0.75.1:8500");
                 //for aws
-                client.Config.Address = new Uri("http://"+html+":8500");
+                //client.Config.Address = new Uri("http://"+html+":8500");
+                client.Config.Address = new Uri(Environment.GetEnvironmentVariable("MACHINE_LOCAL_IPV4"));
                // client.Config.Address = new Uri("http://13.233.42.222:8500");
                 var putPair = new KVPair("secretkey")
                 {
