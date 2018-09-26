@@ -10,7 +10,7 @@ namespace Onboarding
         {
             try
             {
-                Env.Load("./machine_config/machine.env");
+                Env.Load("./machine_config/.env");
                 Environment.GetEnvironmentVariable("MACHINE_LOCAL_IPV4");
             }
             catch (Exception e)
