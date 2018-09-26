@@ -72,3 +72,4 @@ E:\workspace\Project\tldm-onboarding-dev1\tldm-onboarding-dev1\Onboarding\obj\De
 E:\workspace\Project\tldm-onboarding-dev1\tldm-onboarding-dev1\Onboarding\obj\Debug\netcoreapp2.1\Onboarding.dll
 E:\workspace\Project\tldm-onboarding-dev1\tldm-onboarding-dev1\Onboarding\obj\Debug\netcoreapp2.1\Onboarding.pdb
 E:\workspace\Project\tldm-onboarding-dev1\tldm-onboarding-dev1\onboarding\obj\Debug\netcoreapp2.1\Onboarding.csprojAssemblyReference.cache
+E:\workspace\Project\tldm-onboarding-dev1\tldm-onboarding-dev1\Onboarding\obj\Debug\netcoreapp2.1\UserSecretsAssemblyInfo.cs

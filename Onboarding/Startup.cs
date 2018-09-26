@@ -9,8 +9,6 @@ using Onboarding.Models;
 using Onboarding.Contract;
 using Onboarding.Services;
 using Swashbuckle.AspNetCore.Swagger;
-using System;
-using Microsoft.SqlServer.Server;
 
 namespace Onboarding
 {
