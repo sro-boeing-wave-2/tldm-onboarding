@@ -33,8 +33,8 @@ namespace Onboarding.Services
                 Console.WriteLine("\n" + "hello boss2" + "\n");
                 //client.Config.Address = new Uri("http://10.0.75.1:8500");
                 //for aws
-                client.Config.Address = new Uri("http://"+html+":8500");
-               // client.Config.Address = new Uri("http://"+Environment.GetEnvironmentVariable("MACHINE_LOCAL_IPV4")+":8500");
+                //client.Config.Address = new Uri("http://"+html+":8500");
+               client.Config.Address = new Uri("http://"+Environment.GetEnvironmentVariable("MACHINE_LOCAL_IPV4")+":8500");
                 var putPair = new KVPair("secretkey")
                 {
 
