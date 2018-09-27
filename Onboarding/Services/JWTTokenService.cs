@@ -12,13 +12,8 @@ namespace Onboarding.Services
 {
     public class JWTTokenService : IJWTTokenService
     {
-        // public IConfiguration Configuration { get; }
-        //[System.Runtime.InteropServices.ComVisible(true)]
-        //public static class Environment { };
         public JWTTokenService()
         {
-            //Console.WriteLine("YOYO "+ Environment.)
-           //s Configuration = configuration;
             Chilkat.Global global = new Chilkat.Global();
             global.UnlockBundle("Anything for 30-day trail");
             Chilkat.Rsa rsaKey = new Chilkat.Rsa();
@@ -33,34 +28,13 @@ namespace Onboarding.Services
         public static async Task<bool> AddPublicKeyToConsul(string publicKey)
         {
             Console.WriteLine("\n" + "hello boss1" + "\n");
-
-            //string html = string.Empty;
-            //string url = @"http://169.254.169.254/latest/meta-data/local-ipv4";
-
-            //HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            //request.AutomaticDecompression = DecompressionMethods.GZip;
-
-            //using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            //using (System.IO.Stream stream = response.GetResponseStream())
-            //using (StreamReader reader = new StreamReader(stream))
-            //{
-            //    html = reader.ReadToEnd();
-            //}
-
-            //Console.WriteLine(html);
-
-            //var clientConfig = new ConsulClientConfiguration
-            //{
-            //    Address = new Uri("http://10.0.75.1:8500")
-            //};
             using (var client = new ConsulClient())
             {
                 Console.WriteLine("\n" + "hello boss2" + "\n");
                 //client.Config.Address = new Uri("http://10.0.75.1:8500");
                 //for aws
-               // client.Config.Address = new Uri("http://"+html+":8500");
-                client.Config.Address = new Uri("http://"+Environment.GetEnvironmentVariable("MACHINE_LOCAL_IPV4")+":8500");
-                //client.Config.Address = new Uri("http://13.233.42.222:8500");
+                client.Config.Address = new Uri("http://"+html+":8500");
+               // client.Config.Address = new Uri("http://"+Environment.GetEnvironmentVariable("MACHINE_LOCAL_IPV4")+":8500");
                 var putPair = new KVPair("secretkey")
                 {
 

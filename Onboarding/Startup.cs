@@ -25,10 +25,6 @@ namespace Onboarding
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //for docker 
-
-           //var connection = @"Server=db;Database=OnboardingContext;User=sa;Password=YourStrongP@ssword;";
-
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
@@ -81,7 +77,7 @@ namespace Onboarding
             });
 
             //for docker 
-             var context = app.ApplicationServices.GetService<OnboardingContext>();
+            var context = app.ApplicationServices.GetService<OnboardingContext>();
             context.Database.Migrate();
 
             app.UseCors("AppPolicy");

@@ -1,4 +1,5 @@
 ﻿using Chilkat;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.EntityFrameworkCore;
 using MimeKit;
 using Onboarding.Contract;
@@ -6,6 +7,7 @@ using Onboarding.Models;
 using System;
 using System.Collections;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Onboarding.Services
@@ -13,10 +15,13 @@ namespace Onboarding.Services
     public class OnboardService : IOnboardingService
     {
         private readonly OnboardingContext _context;
+        private readonly string Salt = "gj+oAMieIg+2B/eoxA31+w==";
+        private readonly byte[] Saltbyte;
 
         public OnboardService(OnboardingContext context)
         {
             _context = context;
+            Saltbyte = Encoding.ASCII.GetBytes(Salt);
         }
 
 
@@ -170,9 +175,10 @@ namespace Onboarding.Services
 
             if (newuser != null)
             {
+                string hashpassword = HashPassword(user.Password);
                 newuser.FirstName = user.FirstName;
                 newuser.LastName = user.LastName;
-                newuser.Password = user.Password;
+                newuser.Password = hashpassword;
                 newuser.IsVerified = true;
 
                 var workspaceName = user.Workspaces.Select(i => i.Name).ToList();
@@ -185,7 +191,7 @@ namespace Onboarding.Services
                 _context.UserAccount.Update(newuser);
                 _context.SaveChanges();
             }
-            return newuser;
+            return null;
         }
 
         public async Task<Workspace> WorkSpaceDetails(Workspace workspace)
@@ -249,15 +255,12 @@ namespace Onboarding.Services
 
         public async Task<JsonObject> Login(LoginViewModel login)
         {
-            //var variable = "hello";
-            //var value = "Raahil";
-            //Environment.SetEnvironmentVariable(variable, value);
-
             try
             {
+                var hashpassword = HashPassword(login.Password);
                 var user = await _context.UserAccount.Where(existUser =>
                existUser.EmailId == login.EmailId
-               && existUser.Password == login.Password)
+               && existUser.Password == hashpassword)
                .FirstOrDefaultAsync();
 
 
@@ -290,6 +293,18 @@ namespace Onboarding.Services
             var token =  SendMail(value);
             return token;
         }
+
+        public string HashPassword(string Password)
+        {
+            string hashpassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+            password: Password,
+            salt: Saltbyte,
+            prf: KeyDerivationPrf.HMACSHA1,
+            iterationCount: 10000,
+            numBytesRequested: 256 / 8));
+            return hashpassword;
+        }
+
 
     }
 }
