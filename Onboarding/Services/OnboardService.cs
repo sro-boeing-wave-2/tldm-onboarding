@@ -132,7 +132,13 @@ namespace Onboarding.Services
                 }
                 _context.Workspace.Update(workspace);
                 _context.SaveChanges();
-                return user;
+                return new
+                {
+                     Id = user.Id,
+                     emailId = user.EmailId
+
+                };
+               // user;
             }
             return null;
         }
@@ -190,6 +196,7 @@ namespace Onboarding.Services
 
                 _context.UserAccount.Update(newuser);
                 _context.SaveChanges();
+                return (newuser);   
             }
             return null;
         }
@@ -230,7 +237,12 @@ namespace Onboarding.Services
                 workspace.UsersState.Add(newUser);
                 _context.Workspace.Update(workspace);
                 _context.SaveChanges();
-                return newUser;
+                //return newUser;
+                return new
+                {
+                    Id = newuser.Id,
+                    emailId = newuser.EmailId
+                };
 
             }
             return null;

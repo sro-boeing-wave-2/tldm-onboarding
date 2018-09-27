@@ -116,7 +116,7 @@ namespace Onboarding.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(ModelState); 
             }
 
             var newuser = await _controller.PersonalDetails(user);
