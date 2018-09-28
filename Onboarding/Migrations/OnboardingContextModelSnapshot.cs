@@ -27,6 +27,8 @@ namespace Onboarding.Migrations
 
                     b.Property<string>("Developer");
 
+                    b.Property<string>("EmailId");
+
                     b.Property<string>("Info");
 
                     b.Property<string>("LogoUrl");

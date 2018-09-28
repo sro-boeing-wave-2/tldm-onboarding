@@ -2,7 +2,7 @@
 
 namespace Onboarding.Migrations
 {
-    public partial class initial : Migration
+    public partial class INITIAL : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -60,6 +60,7 @@ namespace Onboarding.Migrations
                 {
                     Id = table.Column<string>(nullable: false),
                     Name = table.Column<string>(nullable: true),
+                    EmailId = table.Column<string>(nullable: true),
                     Info = table.Column<string>(nullable: true),
                     Developer = table.Column<string>(nullable: true),
                     AppUrl = table.Column<string>(nullable: true),

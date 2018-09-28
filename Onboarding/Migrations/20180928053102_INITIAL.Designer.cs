@@ -9,8 +9,8 @@ using Onboarding.Models;
 namespace Onboarding.Migrations
 {
     [DbContext(typeof(OnboardingContext))]
-    [Migration("20180927101741_initial")]
-    partial class initial
+    [Migration("20180928053102_INITIAL")]
+    partial class INITIAL
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -28,6 +28,8 @@ namespace Onboarding.Migrations
                     b.Property<string>("AppUrl");
 
                     b.Property<string>("Developer");
+
+                    b.Property<string>("EmailId");
 
                     b.Property<string>("Info");
 
