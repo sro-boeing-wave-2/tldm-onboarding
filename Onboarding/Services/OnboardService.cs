@@ -57,12 +57,8 @@ namespace Onboarding.Services
                 var builder = new BodyBuilder();
                 //subject
                 message.Subject = "Verification Mail";
-                message.Body = new TextPart("plain")
-                {
-                    //Text = "Welcome to TL;DM your temporaray token is  " + token + " Welcome Aboard!"
-                    Text = "Welcome to TL;DM !"+"\n"+"Click on the link to verify " + "http://13.233.42.222/enterOTP?otp=" + token + " Welcome Aboard!"
-                };
-            //message.Body = builder.ToMessageBody();
+                builder.HtmlBody = string.Format(@"<p> Welcome to TL;DM !</p><br><p><a href = ""http://13.233.42.222/enterOTP?otp=""" + token + ">click here</a>"+" to verify your email</p><br><p>Welcome Aboard !");
+                message.Body = builder.ToMessageBody();
             }
             else if (value.Password == "Bot" && value.Workspace == "Bot")
             {
@@ -85,12 +81,11 @@ namespace Onboarding.Services
             {
                 //subject
                 message.Subject = "Invitation Mail";
-                message.Body = new TextPart("plain")
-                {
-                    //"http://13.233.42.222/enterOTP?otp=" + token
-                    Text ="Welcome to TL;DM You have been invited to join " + value.Workspace + " Click on the link to join " + "http://13.233.42.222/invitedUserVerify?otp=" + token+"&workspace="+value.Workspace+ " Welcome Aboard!"
-                };
-                
+                var builder = new BodyBuilder();
+                builder.HtmlBody = string.Format($"<p> Welcome to TL;DM !</p><br><p>You've been invited to join {value.Workspace}</p>" +
+                    $"<p><a href = \"http://13.233.42.222/enterOTP?otp={token}&workspace={value.Workspace}\">click here</a>  to verify your email</p><br><p>Welcome Aboard !");
+                message.Body = builder.ToMessageBody();
+
             }
 
             //Configure and send email
