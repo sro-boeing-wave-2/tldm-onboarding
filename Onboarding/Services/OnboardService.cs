@@ -41,23 +41,28 @@ namespace Onboarding.Services
 
             //instantiate mimemsg
             var message = new MimeMessage();
+            //var html = CreateTextHtmlPart();
 
             //from add
             message.From.Add(new MailboxAddress("TL;DM", "talklessDM@gmail.com"));
             //to add
             message.To.Add(new MailboxAddress("Hi", value.EmailId));
-            //subject
-            message.Subject = "Verification Mail";
+
+           
 
             //body
 
-            if (value.Workspace == null)
+            if (value.Password == "0etcyii")
             {
+                var builder = new BodyBuilder();
+                //subject
+                message.Subject = "Verification Mail";
                 message.Body = new TextPart("plain")
                 {
-                    Text = "Welcome to TL;DM your temporaray token is  " + token + " Welcome Aboard!"
+                    //Text = "Welcome to TL;DM your temporaray token is  " + token + " Welcome Aboard!"
+                    Text = "Welcome to TL;DM !"+"\n"+"Click on the link to verify " + "http://13.233.42.222/enterOTP?otp=" + token + " Welcome Aboard!"
                 };
-
+            //message.Body = builder.ToMessageBody();
             }
             else if (value.Password == "Bot" && value.Workspace == "Bot")
             {
@@ -78,10 +83,14 @@ namespace Onboarding.Services
             }
             else
             {
+                //subject
+                message.Subject = "Invitation Mail";
                 message.Body = new TextPart("plain")
                 {
-                    Text = "Welcome to TL;DM You have been invited to join " + value.Workspace + " Your Temporary token is " + token + " Welcome Aboard!"
+                    //"http://13.233.42.222/enterOTP?otp=" + token
+                    Text ="Welcome to TL;DM You have been invited to join " + value.Workspace + " Click on the link to join " + "http://13.233.42.222/invitedUserVerify?otp=" + token+"&workspace="+value.Workspace+ " Welcome Aboard!"
                 };
+                
             }
 
             //Configure and send email
@@ -117,6 +126,7 @@ namespace Onboarding.Services
 
             if (workspace != null)
             {
+                value.Password = "0etcyii";
                 string token = SendMail(value);
 
                 UserState user = new UserState() { EmailId = value.EmailId, Otp = token };
