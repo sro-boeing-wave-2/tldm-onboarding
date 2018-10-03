@@ -27,27 +27,20 @@ namespace Onboarding.Services
 
         public static async Task<bool> AddPublicKeyToConsul(string publicKey)
         {
-            Console.WriteLine("\n" + "hello boss1" + "\n");
             using (var client = new ConsulClient())
             {
-                Console.WriteLine("\n" + "hello boss2" + "\n");
-                //client.Config.Address = new Uri("http://10.0.75.1:8500");
+                // client.Config.Address = new Uri("http://10.0.75.1:8500");
                 //for aws
-                //client.Config.Address = new Uri("http://"+html+":8500");
                 client.Config.Address = new Uri("http://"+Environment.GetEnvironmentVariable("MACHINE_LOCAL_IPV4")+":8500");
                 var putPair = new KVPair("secretkey")
                 {
 
                     Value = Encoding.UTF8.GetBytes(publicKey)
                 };
-                Console.WriteLine("\n" + "hello boss3" + "\n");
                 var putAttempt = await client.KV.Put(putPair);
-                Console.WriteLine("\n" +"hi" + putAttempt.Response + "\n");
                 if (putAttempt.Response)
                 {
-                    Console.WriteLine("\n" + "hello boss4 " + "\n");
-                    return true;
-                    
+                    return true;                    
                 }
             }
             return false;
@@ -55,10 +48,6 @@ namespace Onboarding.Services
         }
         public string GetToken(JsonObject payload)
         {
-            var variable = "hello";
-            Console.WriteLine(Environment.GetEnvironmentVariable(variable));
-
-
             // Use the private key to generate token
             JsonObject jwtHeader = new JsonObject();
             jwtHeader.AppendString("alg", "RS256");

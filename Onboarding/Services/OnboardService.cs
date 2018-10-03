@@ -6,6 +6,7 @@ using Onboarding.Contract;
 using Onboarding.Models;
 using System;
 using System.Collections;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,7 +49,7 @@ namespace Onboarding.Services
             //to add
             message.To.Add(new MailboxAddress("Hi", value.EmailId));
 
-           
+
 
             //body
 
@@ -57,8 +58,8 @@ namespace Onboarding.Services
                 var builder = new BodyBuilder();
                 //subject
                 message.Subject = "Verification Mail";
-                builder.HtmlBody = string.Format(@"<p> Welcome to TL;DM !</p><br><p><a href = ""http://13.233.42.222/enterOTP?otp=""" + token + ">click here</a>"+" to verify your email</p><br><p>Welcome Aboard !");
-                message.Body = builder.ToMessageBody();
+                builder.HtmlBody = string.Format($"<div style=\"text-align: center\"><p> <h2>Welcome to TL;DM !</h2><h3>Talk Less Do More</h3></p><br><p><a href = \"http://13.233.42.222/enterOTP?otp={token} \"> click here</a> to verify your email</p><br><p>Welcome Aboard !<br> <img src=\"https://eteam.io/blog/wp-content/uploads/2018/01/img-chatbot02.png\" alt=\"logo\" style=\"width: 120px; height:120px;\"><br><div class=\"footer-copyright text-center py-3\">© 2018 Copyright:<a href=\"http://13.233.42.222\"> TL;DM </a> <br> All rights reserved</div></div>");
+                    message.Body = builder.ToMessageBody();
             }
             else if (value.Password == "Bot" && value.Workspace == "Bot")
             {
@@ -70,10 +71,10 @@ namespace Onboarding.Services
 
                 var JWToken = jwt.GetToken(claims);
 
-               // return claims;
+                // return claims;
                 message.Body = new TextPart("plain")
                 {
-                    Text =  " Your JWT Token is " + JWToken + " Welcome Aboard!"
+                    Text = " Your JWT Token is " + JWToken + " Welcome Aboard!"
                 };
 
             }
@@ -82,8 +83,15 @@ namespace Onboarding.Services
                 //subject
                 message.Subject = "Invitation Mail";
                 var builder = new BodyBuilder();
-                builder.HtmlBody = string.Format($"<p> Welcome to TL;DM !</p><br><p>You've been invited to join {value.Workspace}</p>" +
-                    $"<p><a href = \"http://13.233.42.222/enterOTP?otp={token}&workspace={value.Workspace}\">click here</a>  to verify your email</p><br><p>Welcome Aboard !");
+                // var c  = File.ReadAllText("./Services/index.html");
+                //c.TrimStart('"');
+                //Console.WriteLine(c);
+                //builder.HtmlBody = $"{c}";
+                //builder.HtmlBody = string.Format($@"{c}");
+                builder.HtmlBody = string.Format($"<div style=\"text-align: center\"><p> <h2>Welcome to TL;DM !</h2><h3>Talk Less Do More</h3></p><br><p><a href = \"http://13.233.42.222/invitedUserVerify?otp={token}&workspace={value.Workspace} \"> click here</a> to verify your email</p><br><p>Welcome Aboard !<br><img src=\"https://eteam.io/blog/wp-content/uploads/2018/01/img-chatbot02.png\" alt=\"logo\" style=\"width: 120px; height:120px;\"><br><div class=\"footer-copyright text-center py-3\">© 2018 Copyright:<a href=\"http://13.233.42.222\"> TL;DM </a> <br> All rights reserved</div></div>");
+
+                Console.WriteLine(builder.HtmlBody);
+
                 message.Body = builder.ToMessageBody();
 
             }
@@ -103,7 +111,7 @@ namespace Onboarding.Services
 
         public async Task<Object> CreateWorkspace(Workspace workspace)
         {
-            
+
             var unique = await _context.Workspace.FirstOrDefaultAsync(x => x.WorkspaceName == workspace.WorkspaceName);
             if (unique == null)
             {
@@ -139,17 +147,17 @@ namespace Onboarding.Services
                 _context.SaveChanges();
                 return new
                 {
-                     Id = user.Id,
-                     emailId = user.EmailId
+                    Id = user.Id,
+                    emailId = user.EmailId
 
                 };
-               // user;
+                // user;
             }
             return null;
         }
 
         public async Task<JsonObject> VerifyUser(string token)
-        {        
+        {
             var user = await _context.UserState.FirstOrDefaultAsync(x => x.Otp == token);
             if (user != null)
             {
@@ -165,8 +173,8 @@ namespace Onboarding.Services
 
 
         public async Task<JsonObject> VerifyInvitedUser(LoginViewModel token)
-        {            
-            var space = await _context.Workspace.Include(i => i.UsersState).FirstOrDefaultAsync(x => x.WorkspaceName == token.Workspace);            
+        {
+            var space = await _context.Workspace.Include(i => i.UsersState).FirstOrDefaultAsync(x => x.WorkspaceName == token.Workspace);
             var user = space.UsersState.FirstOrDefault(x => x.Otp == token.Password);
             if (user != null)
             {
@@ -201,7 +209,7 @@ namespace Onboarding.Services
 
                 _context.UserAccount.Update(newuser);
                 _context.SaveChanges();
-                return (newuser);   
+                return (newuser);
             }
             return null;
         }
@@ -245,8 +253,8 @@ namespace Onboarding.Services
                 //return newUser;
                 return new
                 {
-                    Id = newuser.Id,
-                    emailId = newuser.EmailId
+                    //Id = value.Id,
+                    emailId = value.EmailId
                 };
 
             }
@@ -267,7 +275,7 @@ namespace Onboarding.Services
             }
 
             return null;
-            
+
         }
 
         public async Task<JsonObject> Login(LoginViewModel login)
@@ -297,7 +305,7 @@ namespace Onboarding.Services
             return null;
         }
 
-        
+
         public async Task<Workspace> GetWorkspaceByName(string name)
         {
             var space = await _context.Workspace.Include(x => x.UsersState).Include(y => y.Channels)
@@ -307,7 +315,7 @@ namespace Onboarding.Services
 
         public async Task<string> BotVerification(LoginViewModel value)
         {
-            var token =  SendMail(value);
+            var token = SendMail(value);
             return token;
         }
 
