@@ -3,14 +3,13 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.EntityFrameworkCore;
 using MimeKit;
 using Onboarding.Contract;
-using Onboarding.Models;
+using Onboarding.Models;  
 using System;
 using System.Collections;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+  
 namespace Onboarding.Services
 {
     public class OnboardService : IOnboardingService
@@ -58,7 +57,11 @@ namespace Onboarding.Services
                 var builder = new BodyBuilder();
                 //subject
                 message.Subject = "Verification Mail";
-                builder.HtmlBody = string.Format($"<div style=\"text-align: center\"><p> <h2>Welcome to TL;DM !</h2><h3>Talk Less Do More</h3></p><br><p><a href = \"http://13.233.42.222/enterOTP?otp={token} \"> click here</a> to verify your email</p><br><p>Welcome Aboard !<br> <img src=\"https://eteam.io/blog/wp-content/uploads/2018/01/img-chatbot02.png\" alt=\"logo\" style=\"width: 120px; height:120px;\"><br><div class=\"footer-copyright text-center py-3\">© 2018 Copyright:<a href=\"http://13.233.42.222\"> TL;DM </a> <br> All rights reserved</div></div>");
+                builder.HtmlBody = string.Format($"<div style=\"text-align: center\"><p> <h2>Welcome to TL;DM !</h2><h3>Talk Less Do More</h3></p>" +
+                    $"<br><p><a href = \"http://13.233.42.222/enterOTP?otp={token}&workspace={value.Workspace} \"> click here</a> to verify your email</p><br>" +
+                    $"<p>Welcome Aboard !<br> <img src=\"https://eteam.io/blog/wp-content/uploads/2018/01/img-chatbot02.png\" alt=\"logo\" " +
+                    $"style=\"width: 120px; height:120px;\"><br><div class=\"footer-copyright text-center py-3\">© 2018 Copyright:" +
+                    $" <a href=\"http://13.233.42.222\"> TL;DM </a> <br> All rights reserved</div></div>");
                     message.Body = builder.ToMessageBody();
             }
             else if (value.Password == "Bot" && value.Workspace == "Bot")
@@ -88,7 +91,13 @@ namespace Onboarding.Services
                 //Console.WriteLine(c);
                 //builder.HtmlBody = $"{c}";
                 //builder.HtmlBody = string.Format($@"{c}");
-                builder.HtmlBody = string.Format($"<div style=\"text-align: center\"><p> <h2>Welcome to TL;DM !</h2><h3>Talk Less Do More</h3></p><br><p>You've been invited to join workspace {value.Workspace}</p><p><a href = \"http://13.233.42.222/invitedUserVerify?otp={token}&workspace={value.Workspace} \"> click here</a> to verify your email</p><br><p>Welcome Aboard !<br><img src=\"https://eteam.io/blog/wp-content/uploads/2018/01/img-chatbot02.png\" alt=\"logo\" style=\"width: 120px; height:120px;\"><br><div class=\"footer-copyright text-center py-3\">© 2018 Copyright:<a href=\"http://13.233.42.222\"> TL;DM </a> <br> All rights reserved</div></div>");
+                builder.HtmlBody = string.Format($"<div style=\"text-align: center\"><p> <h2>Welcome to TL;DM !</h2><h3>Talk Less Do More</h3>" +
+                    $"</p><br><p>You've been invited to join workspace <h3><b>{value.Workspace}</b></h3></p>" +
+                    $"<p><a href = \"http://13.233.42.222/invitedUserVerify?otp={token}&workspace={value.Workspace} \"> click here</a>" +
+                    $" to verify your email</p><br><p>Welcome Aboard !<br>" +
+                    $"<img src=\"https://eteam.io/blog/wp-content/uploads/2018/01/img-chatbot02.png\" alt=\"logo\" style=\"width: 120px; " +
+                    $"height:120px;\"><br><div class=\"footer-copyright text-center py-3\">© 2018 Copyright:<a href=\"http://13.233.42.222\">" +
+                    $" TL;DM </a> <br> All rights reserved</div></div>");
 
                 Console.WriteLine(builder.HtmlBody);
 
